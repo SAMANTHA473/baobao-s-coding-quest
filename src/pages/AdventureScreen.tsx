@@ -3,13 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { CoinDisplay } from '@/components/game/CoinDisplay';
 import { useGame } from '@/contexts/GameContext';
-import { getPuzzleByLevel } from '@/data/puzzles';
-import { ArrowLeft, Lightbulb, TreeDeciduous } from 'lucide-react';
+import { getPuzzleByLevel, getLocationForLevel } from '@/data/puzzles/index';
+import { ArrowLeft, Lightbulb, TreeDeciduous, Mountain, Castle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const AdventureScreen: React.FC = () => {
   const navigate = useNavigate();
-  const { gameState, spendCoins, completeLevel, setCurrentLevel } = useGame();
+  const { gameState, spendCoins, completeLevel, setCurrentLevel, setCurrentLocation } = useGame();
   const { toast } = useToast();
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showResult, setShowResult] = useState<'success' | 'failure' | null>(null);
@@ -21,8 +21,8 @@ const AdventureScreen: React.FC = () => {
     return (
       <div className="min-h-screen bg-gradient-forest flex items-center justify-center p-6">
         <div className="card-fantasy text-center">
-          <h2 className="font-display text-2xl font-bold mb-4">🎉 All Levels Complete!</h2>
-          <p className="font-body mb-6">You've mastered the Forest of Bugs!</p>
+          <h2 className="font-display text-2xl font-bold mb-4">🎉 Congratulations!</h2>
+          <p className="font-body mb-6">You've completed all 30 levels and reunited BaoBao with Mommy Dragon!</p>
           <Button variant="adventure" onClick={() => navigate('/home')}>
             Return Home
           </Button>
@@ -63,7 +63,13 @@ const AdventureScreen: React.FC = () => {
 
   const handleContinue = () => {
     if (showResult === 'success') {
-      setCurrentLevel(gameState.currentLevel + 1);
+      const nextLevel = gameState.currentLevel + 1;
+      setCurrentLevel(nextLevel);
+      // Update location based on new level
+      const newLocation = getLocationForLevel(nextLevel);
+      if (newLocation !== gameState.currentLocation) {
+        setCurrentLocation(newLocation);
+      }
     }
     setShowResult(null);
     setSelectedAnswer(null);
@@ -71,19 +77,50 @@ const AdventureScreen: React.FC = () => {
   };
 
   const locationData = {
-    forest: { name: 'FOREST OF BUGS', icon: TreeDeciduous, gradient: 'from-emerald-600 to-green-800' },
+    forest: { name: 'FOREST OF BUGS', icon: TreeDeciduous, gradient: 'from-emerald-600 to-green-800', bg: 'from-emerald-100 via-green-50 to-emerald-100' },
+    desert: { name: 'DESERT OF LOOPS', icon: Mountain, gradient: 'from-amber-500 to-orange-600', bg: 'from-amber-100 via-orange-50 to-amber-100' },
+    castle: { name: 'CASTLE OF SYNTAX', icon: Castle, gradient: 'from-purple-500 to-indigo-700', bg: 'from-purple-100 via-indigo-50 to-purple-100' },
   };
 
   const location = locationData[currentPuzzle.location];
+  const levelInLocation = ((currentPuzzle.level - 1) % 10) + 1;
+
+  const getBackgroundDecorations = () => {
+    if (currentPuzzle.location === 'forest') {
+      return (
+        <>
+          <div className="absolute top-20 left-10 text-5xl opacity-30">🌲</div>
+          <div className="absolute top-32 right-16 text-4xl opacity-25">🌳</div>
+          <div className="absolute bottom-40 left-20 text-6xl opacity-20">🌿</div>
+          <div className="absolute bottom-20 right-10 text-4xl opacity-30">🍃</div>
+        </>
+      );
+    }
+    if (currentPuzzle.location === 'desert') {
+      return (
+        <>
+          <div className="absolute top-20 left-10 text-5xl opacity-30">🏜️</div>
+          <div className="absolute top-32 right-16 text-4xl opacity-25">🌵</div>
+          <div className="absolute bottom-40 left-20 text-6xl opacity-20">☀️</div>
+          <div className="absolute bottom-20 right-10 text-4xl opacity-30">🐪</div>
+        </>
+      );
+    }
+    return (
+      <>
+        <div className="absolute top-20 left-10 text-5xl opacity-30">🏰</div>
+        <div className="absolute top-32 right-16 text-4xl opacity-25">⚔️</div>
+        <div className="absolute bottom-40 left-20 text-6xl opacity-20">👑</div>
+        <div className="absolute bottom-20 right-10 text-4xl opacity-30">🛡️</div>
+      </>
+    );
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-emerald-100 via-green-50 to-emerald-100 flex flex-col p-4 md:p-6 relative overflow-hidden">
+    <div className={`min-h-screen bg-gradient-to-b ${location.bg} flex flex-col p-4 md:p-6 relative overflow-hidden`}>
       {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 text-5xl opacity-30">🌲</div>
-        <div className="absolute top-32 right-16 text-4xl opacity-25">🌳</div>
-        <div className="absolute bottom-40 left-20 text-6xl opacity-20">🌿</div>
-        <div className="absolute bottom-20 right-10 text-4xl opacity-30">🍃</div>
+        {getBackgroundDecorations()}
       </div>
 
       {/* Header */}
@@ -110,7 +147,7 @@ const AdventureScreen: React.FC = () => {
             </div>
           </div>
           <div className="text-right">
-            <p className="font-display text-2xl font-bold">Level {currentPuzzle.level}</p>
+            <p className="font-display text-2xl font-bold">Level {levelInLocation}</p>
             <p className="font-body text-sm opacity-80">of 10</p>
           </div>
         </div>
@@ -118,7 +155,7 @@ const AdventureScreen: React.FC = () => {
         <div className="mt-3 h-2 bg-white/30 rounded-full overflow-hidden">
           <div
             className="h-full bg-white rounded-full transition-all duration-500"
-            style={{ width: `${(currentPuzzle.level / 10) * 100}%` }}
+            style={{ width: `${(levelInLocation / 10) * 100}%` }}
           />
         </div>
       </div>

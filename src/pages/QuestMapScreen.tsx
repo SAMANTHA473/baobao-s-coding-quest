@@ -3,42 +3,58 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { BaoBaoCharacter } from '@/components/game/BaoBaoCharacter';
 import { useGame } from '@/contexts/GameContext';
-import { TreeDeciduous, Mountain, Castle } from 'lucide-react';
-
-const locations = [
-  {
-    id: 'forest',
-    name: 'Forest of Bugs',
-    description: 'Learn to find and fix errors in code',
-    icon: TreeDeciduous,
-    color: 'from-emerald-500 to-green-700',
-    levels: '1-10',
-    unlocked: true,
-  },
-  {
-    id: 'desert',
-    name: 'Desert of Loops',
-    description: 'Master the art of repetition',
-    icon: Mountain,
-    color: 'from-amber-500 to-orange-600',
-    levels: '11-20',
-    unlocked: false,
-  },
-  {
-    id: 'castle',
-    name: 'Castle of Syntax',
-    description: 'Perfect your coding grammar',
-    icon: Castle,
-    color: 'from-purple-500 to-indigo-700',
-    levels: '21-30',
-    unlocked: false,
-  },
-];
+import { isLocationUnlocked, getLocationForLevel } from '@/data/puzzles/index';
+import { TreeDeciduous, Mountain, Castle, Check } from 'lucide-react';
 
 const QuestMapScreen: React.FC = () => {
   const navigate = useNavigate();
   const { gameState } = useGame();
   const [hoveredLocation, setHoveredLocation] = useState<string | null>(null);
+
+  const getCompletedLevelsForLocation = (locationId: string) => {
+    if (locationId === 'forest') {
+      return gameState.completedLevels.filter(l => l >= 1 && l <= 10).length;
+    }
+    if (locationId === 'desert') {
+      return gameState.completedLevels.filter(l => l >= 11 && l <= 20).length;
+    }
+    return gameState.completedLevels.filter(l => l >= 21 && l <= 30).length;
+  };
+
+  const locations = [
+    {
+      id: 'forest',
+      name: 'Forest of Bugs',
+      description: 'Learn to find and fix errors in code',
+      icon: TreeDeciduous,
+      color: 'from-emerald-500 to-green-700',
+      levels: '1-10',
+      unlocked: isLocationUnlocked('forest', gameState.completedLevels),
+      completed: getCompletedLevelsForLocation('forest'),
+    },
+    {
+      id: 'desert',
+      name: 'Desert of Loops',
+      description: 'Master the art of repetition',
+      icon: Mountain,
+      color: 'from-amber-500 to-orange-600',
+      levels: '11-20',
+      unlocked: isLocationUnlocked('desert', gameState.completedLevels),
+      completed: getCompletedLevelsForLocation('desert'),
+    },
+    {
+      id: 'castle',
+      name: 'Castle of Syntax',
+      description: 'Perfect your coding grammar',
+      icon: Castle,
+      color: 'from-purple-500 to-indigo-700',
+      levels: '21-30',
+      unlocked: isLocationUnlocked('castle', gameState.completedLevels),
+      completed: getCompletedLevelsForLocation('castle'),
+    },
+  ];
+
+  const currentLocation = getLocationForLevel(gameState.currentLevel);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-sky via-sky/80 to-emerald-200 flex flex-col items-center p-6 relative overflow-hidden">
@@ -125,15 +141,28 @@ const QuestMapScreen: React.FC = () => {
                   <p className="font-body text-sm text-muted-foreground mb-3">
                     {location.description}
                   </p>
-                  <div className="inline-block bg-muted px-3 py-1 rounded-full">
-                    <span className="font-display text-sm font-semibold text-muted-foreground">
-                      Levels {location.levels}
-                    </span>
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="inline-block bg-muted px-3 py-1 rounded-full">
+                      <span className="font-display text-sm font-semibold text-muted-foreground">
+                        Levels {location.levels}
+                      </span>
+                    </div>
+                    {location.completed === 10 && (
+                      <div className="inline-flex items-center gap-1 bg-green-500 text-white px-2 py-1 rounded-full">
+                        <Check className="w-3 h-3" />
+                        <span className="font-display text-xs font-semibold">Complete!</span>
+                      </div>
+                    )}
                   </div>
+                  {location.unlocked && location.completed < 10 && (
+                    <p className="font-body text-xs text-muted-foreground mt-2">
+                      {location.completed}/10 completed
+                    </p>
+                  )}
                 </div>
 
                 {/* BaoBao indicator for current location */}
-                {location.id === 'forest' && (
+                {location.id === currentLocation && (
                   <div className="absolute -top-8 left-1/2 -translate-x-1/2">
                     <BaoBaoCharacter size="sm" emotion="excited" />
                   </div>

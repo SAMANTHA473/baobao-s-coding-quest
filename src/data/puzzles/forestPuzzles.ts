@@ -1,17 +1,6 @@
-export interface Puzzle {
-  id: number;
-  level: number;
-  location: 'forest' | 'desert' | 'castle';
-  title: string;
-  description: string;
-  code: string;
-  options: string[];
-  correctAnswer: number;
-  hint: string;
-  explanation: string;
-}
+import { Puzzle } from './types';
 
-export const puzzles: Puzzle[] = [
+export const forestPuzzles: Puzzle[] = [
   {
     id: 1,
     level: 1,
@@ -208,11 +197,3 @@ console.log(sum)`,
     explanation: 'Two bugs: 1) Missing opening brace { after function declaration, 2) "mesage" should be "message".',
   },
 ];
-
-export const getPuzzlesByLocation = (location: 'forest' | 'desert' | 'castle') => {
-  return puzzles.filter((p) => p.location === location);
-};
-
-export const getPuzzleByLevel = (level: number) => {
-  return puzzles.find((p) => p.level === level);
-};
