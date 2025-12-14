@@ -1,96 +1,120 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&family=Nunito:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
-
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Warm fantasy palette */
+    --background: 45 50% 96%;
+    --foreground: 25 40% 20%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 45 40% 98%;
+    --card-foreground: 25 40% 20%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 45 40% 98%;
+    --popover-foreground: 25 40% 20%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Dragon gold primary */
+    --primary: 38 90% 55%;
+    --primary-foreground: 25 40% 15%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Forest green secondary */
+    --secondary: 145 35% 45%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Soft cream muted */
+    --muted: 40 30% 90%;
+    --muted-foreground: 25 20% 45%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Coral accent */
+    --accent: 15 85% 60%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Sky blue for special elements */
+    --sky: 200 80% 60%;
+    --sky-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* Desert sand */
+    --desert: 35 60% 70%;
+    --desert-foreground: 25 40% 20%;
 
-    --radius: 0.5rem;
+    /* Castle purple */
+    --castle: 270 50% 55%;
+    --castle-foreground: 0 0% 100%;
 
-    --sidebar-background: 0 0% 98%;
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 0 0% 100%;
 
-    --sidebar-foreground: 240 5.3% 26.1%;
+    --border: 40 30% 85%;
+    --input: 40 30% 88%;
+    --ring: 38 90% 55%;
 
-    --sidebar-primary: 240 5.9% 10%;
+    --radius: 1rem;
 
-    --sidebar-primary-foreground: 0 0% 98%;
+    /* Gradients */
+    --gradient-gold: linear-gradient(135deg, hsl(45, 95%, 65%) 0%, hsl(35, 90%, 50%) 100%);
+    --gradient-forest: linear-gradient(135deg, hsl(145, 40%, 50%) 0%, hsl(160, 35%, 35%) 100%);
+    --gradient-coral: linear-gradient(135deg, hsl(15, 90%, 65%) 0%, hsl(5, 85%, 55%) 100%);
+    --gradient-sky: linear-gradient(180deg, hsl(200, 80%, 70%) 0%, hsl(210, 85%, 55%) 100%);
+    --gradient-desert: linear-gradient(135deg, hsl(40, 70%, 75%) 0%, hsl(30, 65%, 60%) 100%);
+    --gradient-castle: linear-gradient(135deg, hsl(270, 55%, 60%) 0%, hsl(280, 50%, 45%) 100%);
+    --gradient-magic: linear-gradient(135deg, hsl(280, 70%, 60%) 0%, hsl(200, 80%, 60%) 50%, hsl(145, 50%, 50%) 100%);
 
-    --sidebar-accent: 240 4.8% 95.9%;
+    /* Shadows */
+    --shadow-soft: 0 4px 20px -4px hsl(25 40% 20% / 0.15);
+    --shadow-card: 0 8px 30px -8px hsl(25 40% 20% / 0.2);
+    --shadow-glow-gold: 0 0 30px hsl(38 90% 55% / 0.4);
+    --shadow-glow-coral: 0 0 30px hsl(15 85% 60% / 0.4);
 
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 45 40% 95%;
+    --sidebar-foreground: 25 40% 20%;
+    --sidebar-primary: 38 90% 55%;
+    --sidebar-primary-foreground: 25 40% 15%;
+    --sidebar-accent: 145 35% 45%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 40 30% 85%;
+    --sidebar-ring: 38 90% 55%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 25 30% 10%;
+    --foreground: 45 30% 95%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 25 25% 15%;
+    --card-foreground: 45 30% 95%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 25 25% 15%;
+    --popover-foreground: 45 30% 95%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 38 85% 55%;
+    --primary-foreground: 25 40% 10%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 145 30% 40%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 25 20% 20%;
+    --muted-foreground: 40 20% 65%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 15 80% 55%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 65% 50%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --border: 25 20% 25%;
+    --input: 25 20% 25%;
+    --ring: 38 85% 55%;
+
+    --sidebar-background: 25 25% 12%;
+    --sidebar-foreground: 45 30% 95%;
+    --sidebar-primary: 38 85% 55%;
+    --sidebar-primary-foreground: 25 40% 10%;
+    --sidebar-accent: 145 30% 40%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 25 20% 25%;
+    --sidebar-ring: 38 85% 55%;
   }
 }
 
@@ -100,6 +124,159 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-body antialiased;
   }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+}
+
+@layer components {
+  .btn-adventure {
+    @apply relative overflow-hidden px-8 py-4 rounded-2xl font-display font-bold text-xl
+           bg-gradient-to-br from-primary to-amber-600 text-primary-foreground
+           shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95
+           transition-all duration-300 ease-out;
+  }
+
+  .btn-adventure::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-t from-transparent via-white/20 to-white/40 opacity-0
+           hover:opacity-100 transition-opacity duration-300;
+  }
+
+  .btn-forest {
+    @apply relative overflow-hidden px-8 py-4 rounded-2xl font-display font-bold text-xl
+           bg-gradient-to-br from-secondary to-emerald-700 text-secondary-foreground
+           shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95
+           transition-all duration-300 ease-out;
+  }
+
+  .btn-coral {
+    @apply relative overflow-hidden px-8 py-4 rounded-2xl font-display font-bold text-xl
+           bg-gradient-to-br from-accent to-rose-600 text-accent-foreground
+           shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95
+           transition-all duration-300 ease-out;
+  }
+
+  .card-fantasy {
+    @apply bg-card rounded-3xl shadow-lg border-2 border-primary/20 
+           backdrop-blur-sm p-6 transition-all duration-300
+           hover:shadow-xl hover:border-primary/40;
+  }
+
+  .text-gradient-gold {
+    @apply bg-gradient-to-r from-amber-500 via-yellow-400 to-orange-500 
+           bg-clip-text text-transparent;
+  }
+
+  .text-gradient-magic {
+    @apply bg-gradient-to-r from-purple-500 via-sky-400 to-emerald-500 
+           bg-clip-text text-transparent;
+  }
+
+  .glow-gold {
+    box-shadow: var(--shadow-glow-gold);
+  }
+
+  .glow-coral {
+    box-shadow: var(--shadow-glow-coral);
+  }
+}
+
+@layer utilities {
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .animate-bounce-slow {
+    animation: bounce-slow 2s ease-in-out infinite;
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  .animate-wiggle {
+    animation: wiggle 0.5s ease-in-out infinite;
+  }
+
+  .animate-sparkle {
+    animation: sparkle 1.5s ease-in-out infinite;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.6s ease-out;
+  }
+
+  .animate-slide-down {
+    animation: slide-down 0.6s ease-out;
+  }
+
+  .animate-scale-in {
+    animation: scale-in 0.4s ease-out;
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-out;
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+@keyframes bounce-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px hsl(38 90% 55% / 0.3); }
+  50% { box-shadow: 0 0 40px hsl(38 90% 55% / 0.6); }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.1); }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-down {
+  from { opacity: 0; transform: translateY(-30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-muted rounded-full;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-primary/50 rounded-full hover:bg-primary/70 transition-colors;
 }
