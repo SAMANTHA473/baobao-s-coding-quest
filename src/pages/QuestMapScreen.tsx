@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { BaoBaoCharacter } from '@/components/game/BaoBaoCharacter';
+import { CoinDisplay } from '@/components/game/CoinDisplay';
 import { useGame } from '@/contexts/GameContext';
 import { isLocationUnlocked, getLocationForLevel } from '@/data/puzzles/index';
-import { TreeDeciduous, Mountain, Castle, Check } from 'lucide-react';
+import { TreeDeciduous, Mountain, Castle, Check, ArrowLeft, Lock } from 'lucide-react';
 
 const QuestMapScreen: React.FC = () => {
   const navigate = useNavigate();
-  const { gameState } = useGame();
+  const { gameState, setCurrentLevel, setCurrentLocation } = useGame();
   const [hoveredLocation, setHoveredLocation] = useState<string | null>(null);
 
   const getCompletedLevelsForLocation = (locationId: string) => {
@@ -21,6 +22,13 @@ const QuestMapScreen: React.FC = () => {
     return gameState.completedLevels.filter(l => l >= 21 && l <= 30).length;
   };
 
+  const getStartingLevelForLocation = (locationId: string) => {
+    const completed = getCompletedLevelsForLocation(locationId);
+    if (locationId === 'forest') return Math.min(1 + completed, 10);
+    if (locationId === 'desert') return Math.min(11 + completed, 20);
+    return Math.min(21 + completed, 30);
+  };
+
   const locations = [
     {
       id: 'forest',
@@ -31,6 +39,7 @@ const QuestMapScreen: React.FC = () => {
       levels: '1-10',
       unlocked: isLocationUnlocked('forest', gameState.completedLevels),
       completed: getCompletedLevelsForLocation('forest'),
+      startLevel: getStartingLevelForLocation('forest'),
     },
     {
       id: 'desert',
@@ -41,6 +50,7 @@ const QuestMapScreen: React.FC = () => {
       levels: '11-20',
       unlocked: isLocationUnlocked('desert', gameState.completedLevels),
       completed: getCompletedLevelsForLocation('desert'),
+      startLevel: getStartingLevelForLocation('desert'),
     },
     {
       id: 'castle',
@@ -51,10 +61,18 @@ const QuestMapScreen: React.FC = () => {
       levels: '21-30',
       unlocked: isLocationUnlocked('castle', gameState.completedLevels),
       completed: getCompletedLevelsForLocation('castle'),
+      startLevel: getStartingLevelForLocation('castle'),
     },
   ];
 
   const currentLocation = getLocationForLevel(gameState.currentLevel);
+
+  const handleLocationClick = (location: typeof locations[0]) => {
+    if (!location.unlocked) return;
+    setCurrentLevel(location.startLevel);
+    setCurrentLocation(location.id as 'forest' | 'desert' | 'castle');
+    navigate('/adventure');
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-sky via-sky/80 to-emerald-200 flex flex-col items-center p-6 relative overflow-hidden">
@@ -63,6 +81,19 @@ const QuestMapScreen: React.FC = () => {
         <div className="absolute top-10 left-10 text-6xl animate-float opacity-60">☁️</div>
         <div className="absolute top-32 right-16 text-5xl animate-float opacity-50" style={{ animationDelay: '1s' }}>☁️</div>
         <div className="absolute top-48 left-1/4 text-4xl animate-float opacity-40" style={{ animationDelay: '2s' }}>☁️</div>
+      </div>
+
+      {/* Header */}
+      <div className="w-full max-w-4xl flex items-center justify-between mb-4 relative z-10">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => navigate('/home')}
+          className="text-foreground"
+        >
+          <ArrowLeft className="w-6 h-6" />
+        </Button>
+        <CoinDisplay />
       </div>
 
       {/* Title */}
@@ -108,18 +139,20 @@ const QuestMapScreen: React.FC = () => {
                 style={{ animationDelay: `${index * 0.2}s` }}
                 onMouseEnter={() => setHoveredLocation(location.id)}
                 onMouseLeave={() => setHoveredLocation(null)}
+                onClick={() => handleLocationClick(location)}
               >
                 <div
                   className={`
                     card-fantasy p-6 text-center transition-all duration-300 cursor-pointer
-                    ${location.unlocked ? 'hover:scale-105' : 'opacity-60 cursor-not-allowed'}
+                    ${location.unlocked ? 'hover:scale-105 hover:shadow-glow-gold' : 'opacity-60 cursor-not-allowed grayscale'}
                     ${isHovered && location.unlocked ? 'border-primary shadow-glow-gold' : ''}
                   `}
                 >
                   {/* Lock overlay */}
                   {!location.unlocked && (
-                    <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm rounded-3xl flex items-center justify-center z-10">
-                      <span className="text-4xl">🔒</span>
+                    <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm rounded-3xl flex flex-col items-center justify-center z-10 gap-2">
+                      <Lock className="w-10 h-10 text-white/80" />
+                      <span className="font-display text-sm text-white/80">Complete previous location</span>
                     </div>
                   )}
 
@@ -141,7 +174,7 @@ const QuestMapScreen: React.FC = () => {
                   <p className="font-body text-sm text-muted-foreground mb-3">
                     {location.description}
                   </p>
-                  <div className="flex items-center justify-center gap-2">
+                  <div className="flex items-center justify-center gap-2 flex-wrap">
                     <div className="inline-block bg-muted px-3 py-1 rounded-full">
                       <span className="font-display text-sm font-semibold text-muted-foreground">
                         Levels {location.levels}
@@ -159,10 +192,21 @@ const QuestMapScreen: React.FC = () => {
                       {location.completed}/10 completed
                     </p>
                   )}
+
+                  {/* Play button for unlocked locations */}
+                  {location.unlocked && (
+                    <Button
+                      variant={location.id === 'forest' ? 'forest' : location.id === 'desert' ? 'coral' : 'castle'}
+                      size="sm"
+                      className="mt-4"
+                    >
+                      {location.completed === 10 ? 'Replay' : location.completed > 0 ? 'Continue' : 'Start'} →
+                    </Button>
+                  )}
                 </div>
 
                 {/* BaoBao indicator for current location */}
-                {location.id === currentLocation && (
+                {location.id === currentLocation && location.unlocked && (
                   <div className="absolute -top-8 left-1/2 -translate-x-1/2">
                     <BaoBaoCharacter size="sm" emotion="excited" />
                   </div>
@@ -171,18 +215,6 @@ const QuestMapScreen: React.FC = () => {
             );
           })}
         </div>
-      </div>
-
-      {/* Start button */}
-      <div className="relative z-10 mt-8 animate-slide-up" style={{ animationDelay: '0.6s' }}>
-        <Button
-          variant="adventure"
-          size="xl"
-          onClick={() => navigate('/home')}
-          className="min-w-[250px]"
-        >
-          Start Adventure! ✨
-        </Button>
       </div>
 
       {/* Mommy dragon silhouette in distance */}
