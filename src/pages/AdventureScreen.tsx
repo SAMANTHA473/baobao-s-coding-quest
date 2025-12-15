@@ -64,6 +64,13 @@ const AdventureScreen: React.FC = () => {
   const handleContinue = () => {
     if (showResult === 'success') {
       const nextLevel = gameState.currentLevel + 1;
+      
+      // Check if all 30 levels are completed
+      if (nextLevel > 30) {
+        navigate('/final-story');
+        return;
+      }
+      
       setCurrentLevel(nextLevel);
       // Update location based on new level
       const newLocation = getLocationForLevel(nextLevel);
