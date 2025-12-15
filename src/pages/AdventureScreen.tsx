@@ -128,7 +128,7 @@ const AdventureScreen: React.FC = () => {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => navigate('/home')}
+          onClick={() => navigate('/quest-map')}
           className="text-foreground"
         >
           <ArrowLeft className="w-6 h-6" />

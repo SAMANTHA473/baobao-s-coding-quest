@@ -16,7 +16,7 @@ const HomeScreen: React.FC = () => {
       label: 'Game Adventure',
       icon: Gamepad2,
       variant: 'adventure' as const,
-      path: '/adventure',
+      path: '/quest-map',
       emoji: '🎮',
     },
     {
