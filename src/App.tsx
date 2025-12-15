@@ -12,6 +12,8 @@ import HomeScreen from "./pages/HomeScreen";
 import AdventureScreen from "./pages/AdventureScreen";
 import ShopScreen from "./pages/ShopScreen";
 import SettingsScreen from "./pages/SettingsScreen";
+import FinalStoryScreen from "./pages/FinalStoryScreen";
+import JourneyCompleteScreen from "./pages/JourneyCompleteScreen";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +34,8 @@ const App = () => (
             <Route path="/adventure" element={<AdventureScreen />} />
             <Route path="/shop" element={<ShopScreen />} />
             <Route path="/settings" element={<SettingsScreen />} />
+            <Route path="/final-story" element={<FinalStoryScreen />} />
+            <Route path="/journey-complete" element={<JourneyCompleteScreen />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
