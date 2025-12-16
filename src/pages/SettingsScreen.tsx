@@ -4,11 +4,26 @@ import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { useGame } from '@/contexts/GameContext';
-import { ArrowLeft, Volume2, VolumeX, Music, Settings } from 'lucide-react';
+import { useAudio } from '@/contexts/AudioContext';
+import { ArrowLeft, Volume2, VolumeX, Music, Settings, Music2 } from 'lucide-react';
 
 const SettingsScreen: React.FC = () => {
   const navigate = useNavigate();
-  const { gameState, toggleSound, setMusicVolume, resetGame } = useGame();
+  const { gameState, toggleSound, toggleMusic, setMusicVolume, resetGame } = useGame();
+  const { playSound } = useAudio();
+
+  const handleToggleSound = () => {
+    toggleSound();
+    if (!gameState.soundEnabled) {
+      // Will play after toggle (was off, now on)
+      setTimeout(() => playSound('click'), 50);
+    }
+  };
+
+  const handleToggleMusic = () => {
+    toggleMusic();
+    playSound('click');
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-100 via-gray-50 to-slate-100 flex flex-col p-4 md:p-6 relative overflow-hidden">
@@ -24,7 +39,10 @@ const SettingsScreen: React.FC = () => {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => navigate('/home')}
+          onClick={() => {
+            playSound('click');
+            navigate('/home');
+          }}
           className="text-foreground"
         >
           <ArrowLeft className="w-6 h-6" />
@@ -37,7 +55,7 @@ const SettingsScreen: React.FC = () => {
 
       {/* Settings content */}
       <div className="flex-1 max-w-md mx-auto w-full space-y-6 relative z-10">
-        {/* Sound toggle */}
+        {/* Sound Effects toggle */}
         <div className="card-fantasy animate-slide-up">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -55,13 +73,36 @@ const SettingsScreen: React.FC = () => {
             </div>
             <Switch
               checked={gameState.soundEnabled}
-              onCheckedChange={toggleSound}
+              onCheckedChange={handleToggleSound}
+            />
+          </div>
+        </div>
+
+        {/* Background Music toggle */}
+        <div className="card-fantasy animate-slide-up" style={{ animationDelay: '0.1s' }}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {gameState.musicEnabled ? (
+                <Music className="w-6 h-6 text-primary" />
+              ) : (
+                <Music2 className="w-6 h-6 text-muted-foreground" />
+              )}
+              <div>
+                <h3 className="font-display font-bold text-foreground">Background Music</h3>
+                <p className="font-body text-sm text-muted-foreground">
+                  Toggle background music
+                </p>
+              </div>
+            </div>
+            <Switch
+              checked={gameState.musicEnabled}
+              onCheckedChange={handleToggleMusic}
             />
           </div>
         </div>
 
         {/* Music volume */}
-        <div className="card-fantasy animate-slide-up" style={{ animationDelay: '0.1s' }}>
+        <div className="card-fantasy animate-slide-up" style={{ animationDelay: '0.2s' }}>
           <div className="flex items-center gap-3 mb-4">
             <Music className="w-6 h-6 text-primary" />
             <div>
@@ -79,6 +120,7 @@ const SettingsScreen: React.FC = () => {
               max={100}
               step={1}
               className="flex-1"
+              disabled={!gameState.musicEnabled}
             />
             <span className="text-sm text-muted-foreground">🔊</span>
           </div>
@@ -88,7 +130,7 @@ const SettingsScreen: React.FC = () => {
         </div>
 
         {/* Player info */}
-        <div className="card-fantasy animate-slide-up" style={{ animationDelay: '0.2s' }}>
+        <div className="card-fantasy animate-slide-up" style={{ animationDelay: '0.3s' }}>
           <h3 className="font-display font-bold text-foreground mb-4">Player Info</h3>
           <div className="space-y-2 font-body text-sm">
             <div className="flex justify-between">
@@ -115,7 +157,7 @@ const SettingsScreen: React.FC = () => {
         </div>
 
         {/* Reset game */}
-        <div className="card-fantasy animate-slide-up" style={{ animationDelay: '0.3s' }}>
+        <div className="card-fantasy animate-slide-up" style={{ animationDelay: '0.4s' }}>
           <h3 className="font-display font-bold text-foreground mb-2">Reset Progress</h3>
           <p className="font-body text-sm text-muted-foreground mb-4">
             Start a new adventure from the beginning. This will reset all progress but keep your name.
@@ -124,6 +166,7 @@ const SettingsScreen: React.FC = () => {
             variant="destructive"
             className="w-full"
             onClick={() => {
+              playSound('click');
               if (confirm('Are you sure you want to reset all progress?')) {
                 resetGame();
               }
@@ -136,7 +179,10 @@ const SettingsScreen: React.FC = () => {
 
       {/* Footer */}
       <div className="mt-8 text-center relative z-10 animate-fade-in">
-        <Button variant="outline" onClick={() => navigate('/home')}>
+        <Button variant="outline" onClick={() => {
+          playSound('click');
+          navigate('/home');
+        }}>
           ← Back to Home
         </Button>
         <p className="font-body text-xs text-muted-foreground mt-4">

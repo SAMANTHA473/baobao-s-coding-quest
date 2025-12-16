@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { BaoBaoCharacter } from '@/components/game/BaoBaoCharacter';
 import { CoinDisplay } from '@/components/game/CoinDisplay';
 import { useGame } from '@/contexts/GameContext';
+import { useAudio } from '@/contexts/AudioContext';
 import { isLocationUnlocked, getLocationForLevel } from '@/data/puzzles/index';
 import { TreeDeciduous, Mountain, Castle, Check, ArrowLeft, Lock, Sparkles } from 'lucide-react';
 
@@ -16,6 +17,7 @@ const QuestMapScreen: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { gameState, setCurrentLevel, setCurrentLocation } = useGame();
+  const { playSound, playMusic } = useAudio();
   const [hoveredLocation, setHoveredLocation] = useState<string | null>(null);
   
   // Animation states
@@ -79,6 +81,11 @@ const QuestMapScreen: React.FC = () => {
 
   const currentLocation = getLocationForLevel(gameState.currentLevel);
 
+  // Start map music on mount
+  useEffect(() => {
+    playMusic('map');
+  }, [playMusic]);
+
   // Handle unlock animation when arriving from completed location
   useEffect(() => {
     if (locationState?.justCompleted && locationState?.newlyUnlocked) {
@@ -89,6 +96,7 @@ const QuestMapScreen: React.FC = () => {
       const unlockTimer = setTimeout(() => {
         setAnimatingBaoBao(false);
         setShowUnlockAnimation(true);
+        playSound('unlock');
       }, 1500);
       
       // Show new challenge message
@@ -107,10 +115,11 @@ const QuestMapScreen: React.FC = () => {
         clearTimeout(cleanupTimer);
       };
     }
-  }, [locationState]);
+  }, [locationState, playSound]);
 
   const handleLocationClick = (locationItem: typeof locations[0]) => {
     if (!locationItem.unlocked) return;
+    playSound('click');
     setCurrentLevel(locationItem.startLevel);
     setCurrentLocation(locationItem.id as 'forest' | 'desert' | 'castle');
     navigate('/adventure');
@@ -130,7 +139,10 @@ const QuestMapScreen: React.FC = () => {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => navigate('/home')}
+          onClick={() => {
+            playSound('click');
+            navigate('/home');
+          }}
           className="text-foreground"
         >
           <ArrowLeft className="w-6 h-6" />

@@ -1,14 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { BaoBaoCharacter } from '@/components/game/BaoBaoCharacter';
 import { CoinDisplay } from '@/components/game/CoinDisplay';
 import { useGame } from '@/contexts/GameContext';
+import { useAudio } from '@/contexts/AudioContext';
 import { Gamepad2, ShoppingBag, Settings } from 'lucide-react';
 
 const HomeScreen: React.FC = () => {
   const navigate = useNavigate();
   const { gameState } = useGame();
+  const { playSound, playMusic } = useAudio();
+
+  // Start home music on mount
+  useEffect(() => {
+    playMusic('home');
+  }, [playMusic]);
 
   const menuItems = [
     {
@@ -36,6 +43,11 @@ const HomeScreen: React.FC = () => {
       emoji: '⚙️',
     },
   ];
+
+  const handleNavigate = (path: string) => {
+    playSound('click');
+    navigate(path);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-100 via-orange-50 to-yellow-100 flex flex-col items-center p-6 relative overflow-hidden">
@@ -82,7 +94,7 @@ const HomeScreen: React.FC = () => {
                 variant={item.variant}
                 size="xl"
                 className="w-full justify-between px-8"
-                onClick={() => navigate(item.path)}
+                onClick={() => handleNavigate(item.path)}
               >
                 <div className="flex items-center gap-4">
                   <Icon className="w-6 h-6" />

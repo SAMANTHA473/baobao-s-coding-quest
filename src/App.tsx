@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { GameProvider } from "@/contexts/GameContext";
+import { AudioProvider } from "@/contexts/AudioContext";
 import Index from "./pages/Index";
 import WelcomeScreen from "./pages/WelcomeScreen";
 import StoryScreen from "./pages/StoryScreen";
@@ -21,25 +22,27 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <GameProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/welcome" element={<WelcomeScreen />} />
-            <Route path="/story" element={<StoryScreen />} />
-            <Route path="/quest-map" element={<QuestMapScreen />} />
-            <Route path="/home" element={<HomeScreen />} />
-            <Route path="/adventure" element={<AdventureScreen />} />
-            <Route path="/shop" element={<ShopScreen />} />
-            <Route path="/settings" element={<SettingsScreen />} />
-            <Route path="/final-story" element={<FinalStoryScreen />} />
-            <Route path="/journey-complete" element={<JourneyCompleteScreen />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
+      <AudioProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/welcome" element={<WelcomeScreen />} />
+              <Route path="/story" element={<StoryScreen />} />
+              <Route path="/quest-map" element={<QuestMapScreen />} />
+              <Route path="/home" element={<HomeScreen />} />
+              <Route path="/adventure" element={<AdventureScreen />} />
+              <Route path="/shop" element={<ShopScreen />} />
+              <Route path="/settings" element={<SettingsScreen />} />
+              <Route path="/final-story" element={<FinalStoryScreen />} />
+              <Route path="/journey-complete" element={<JourneyCompleteScreen />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AudioProvider>
     </GameProvider>
   </QueryClientProvider>
 );

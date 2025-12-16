@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { CoinDisplay } from '@/components/game/CoinDisplay';
 import { LocationCompletionOverlay } from '@/components/game/LocationCompletionOverlay';
 import { useGame } from '@/contexts/GameContext';
+import { useAudio } from '@/contexts/AudioContext';
 import { getPuzzleByLevel, getLocationForLevel } from '@/data/puzzles/index';
 import { ArrowLeft, Lightbulb, TreeDeciduous, Mountain, Castle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -11,13 +12,20 @@ import { useToast } from '@/hooks/use-toast';
 const AdventureScreen: React.FC = () => {
   const navigate = useNavigate();
   const { gameState, spendCoins, completeLevel, setCurrentLevel, setCurrentLocation } = useGame();
+  const { playSound, playMusic, fadeOutMusic } = useAudio();
   const { toast } = useToast();
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showResult, setShowResult] = useState<'success' | 'failure' | null>(null);
   const [showHint, setShowHint] = useState(false);
   const [showLocationComplete, setShowLocationComplete] = useState<'forest' | 'desert' | 'castle' | null>(null);
+  const [buttonsDisabled, setButtonsDisabled] = useState(false);
 
   const currentPuzzle = getPuzzleByLevel(gameState.currentLevel);
+
+  // Start gameplay music on mount
+  useEffect(() => {
+    playMusic('gameplay');
+  }, [playMusic]);
 
   if (!currentPuzzle) {
     return (
@@ -25,7 +33,10 @@ const AdventureScreen: React.FC = () => {
         <div className="card-fantasy text-center">
           <h2 className="font-display text-2xl font-bold mb-4">🎉 Congratulations!</h2>
           <p className="font-body mb-6">You've completed all 30 levels and reunited BaoBao with Mommy Dragon!</p>
-          <Button variant="adventure" onClick={() => navigate('/home')}>
+          <Button variant="adventure" onClick={() => {
+            playSound('click');
+            navigate('/home');
+          }}>
             Return Home
           </Button>
         </div>
@@ -34,9 +45,12 @@ const AdventureScreen: React.FC = () => {
   }
 
   const handleHint = () => {
+    if (buttonsDisabled) return;
+    
     if (gameState.coins >= 10) {
       const success = spendCoins(10);
       if (success) {
+        playSound('hint');
         setShowHint(true);
         toast({
           title: 'Hint Unlocked! 💡',
@@ -44,6 +58,7 @@ const AdventureScreen: React.FC = () => {
         });
       }
     } else {
+      playSound('wrong');
       toast({
         title: 'Not enough coins!',
         description: 'You need 10 coins to unlock a hint.',
@@ -52,18 +67,37 @@ const AdventureScreen: React.FC = () => {
     }
   };
 
+  const handleAnswerSelect = (index: number) => {
+    if (buttonsDisabled) return;
+    playSound('click');
+    setSelectedAnswer(index);
+  };
+
   const handleSubmit = () => {
-    if (selectedAnswer === null) return;
+    if (selectedAnswer === null || buttonsDisabled) return;
+
+    const currentLevel = gameState.currentLevel;
+    const isLocationComplete = currentLevel === 10 || currentLevel === 20 || currentLevel === 30;
 
     if (selectedAnswer === currentPuzzle.correctAnswer) {
+      playSound('correct');
       setShowResult('success');
       completeLevel(currentPuzzle.level);
+      
+      // If this completes a location, disable buttons and prepare for celebration
+      if (isLocationComplete) {
+        setButtonsDisabled(true);
+        fadeOutMusic(500);
+      }
     } else {
+      playSound('wrong');
       setShowResult('failure');
     }
   };
 
   const handleContinue = () => {
+    playSound('click');
+    
     if (showResult === 'success') {
       const nextLevel = gameState.currentLevel + 1;
       const currentLevel = gameState.currentLevel;
@@ -175,8 +209,12 @@ const AdventureScreen: React.FC = () => {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => navigate('/quest-map')}
+          onClick={() => {
+            playSound('click');
+            navigate('/quest-map');
+          }}
           className="text-foreground"
+          disabled={buttonsDisabled}
         >
           <ArrowLeft className="w-6 h-6" />
         </Button>
@@ -227,9 +265,11 @@ const AdventureScreen: React.FC = () => {
           {currentPuzzle.options.map((option, index) => (
             <button
               key={index}
-              onClick={() => setSelectedAnswer(index)}
+              onClick={() => handleAnswerSelect(index)}
+              disabled={buttonsDisabled}
               className={`
                 w-full p-4 rounded-xl border-2 text-left font-body transition-all duration-300
+                ${buttonsDisabled ? 'opacity-50 cursor-not-allowed' : ''}
                 ${
                   selectedAnswer === index
                     ? 'border-primary bg-primary/10 shadow-md'
@@ -251,7 +291,7 @@ const AdventureScreen: React.FC = () => {
             variant="outline"
             className="flex-1"
             onClick={handleHint}
-            disabled={showHint}
+            disabled={showHint || buttonsDisabled}
           >
             <Lightbulb className="w-5 h-5 mr-2" />
             Hint (10 🪙)
@@ -260,7 +300,7 @@ const AdventureScreen: React.FC = () => {
             variant="adventure"
             className="flex-1"
             onClick={handleSubmit}
-            disabled={selectedAnswer === null}
+            disabled={selectedAnswer === null || buttonsDisabled}
           >
             Submit Answer
           </Button>

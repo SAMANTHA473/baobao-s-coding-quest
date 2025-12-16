@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 interface GameState {
   playerName: string;
@@ -8,6 +8,7 @@ interface GameState {
   completedLevels: number[];
   inventory: string[];
   soundEnabled: boolean;
+  musicEnabled: boolean;
   musicVolume: number;
 }
 
@@ -21,9 +22,24 @@ interface GameContextType {
   setCurrentLocation: (location: 'forest' | 'desert' | 'castle') => void;
   addToInventory: (item: string) => void;
   toggleSound: () => void;
+  toggleMusic: () => void;
   setMusicVolume: (volume: number) => void;
   resetGame: () => void;
 }
+
+const STORAGE_KEY = 'baobao-quest-state';
+
+const loadSavedState = (): Partial<GameState> => {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      return JSON.parse(saved);
+    }
+  } catch (e) {
+    console.log('Failed to load saved state');
+  }
+  return {};
+};
 
 const initialState: GameState = {
   playerName: '',
@@ -33,13 +49,24 @@ const initialState: GameState = {
   completedLevels: [],
   inventory: [],
   soundEnabled: true,
+  musicEnabled: true,
   musicVolume: 70,
+  ...loadSavedState(),
 };
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [gameState, setGameState] = useState<GameState>(initialState);
+
+  // Persist state to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(gameState));
+    } catch (e) {
+      console.log('Failed to save state');
+    }
+  }, [gameState]);
 
   const setPlayerName = (name: string) => {
     setGameState(prev => ({ ...prev, playerName: name }));
@@ -84,12 +111,23 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setGameState(prev => ({ ...prev, soundEnabled: !prev.soundEnabled }));
   };
 
+  const toggleMusic = () => {
+    setGameState(prev => ({ ...prev, musicEnabled: !prev.musicEnabled }));
+  };
+
   const setMusicVolume = (volume: number) => {
     setGameState(prev => ({ ...prev, musicVolume: volume }));
   };
 
   const resetGame = () => {
-    setGameState({ ...initialState, playerName: gameState.playerName });
+    const resetState = {
+      ...initialState,
+      playerName: gameState.playerName,
+      soundEnabled: gameState.soundEnabled,
+      musicEnabled: gameState.musicEnabled,
+      musicVolume: gameState.musicVolume,
+    };
+    setGameState(resetState);
   };
 
   return (
@@ -104,6 +142,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setCurrentLocation,
         addToInventory,
         toggleSound,
+        toggleMusic,
         setMusicVolume,
         resetGame,
       }}
