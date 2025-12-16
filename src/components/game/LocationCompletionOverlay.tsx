@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { BaoBaoCharacter } from '@/components/game/BaoBaoCharacter';
+import { useAudio } from '@/contexts/AudioContext';
 import { TreeDeciduous, Mountain, Castle, Star, Sparkles } from 'lucide-react';
 
 interface LocationCompletionOverlayProps {
@@ -34,13 +35,24 @@ export const LocationCompletionOverlay: React.FC<LocationCompletionOverlayProps>
   onContinue,
 }) => {
   const [showContent, setShowContent] = useState(false);
+  const { playSound, playMusic } = useAudio();
   const location = locationData[locationId];
   const Icon = location.icon;
 
   useEffect(() => {
+    // Play celebration music and sounds
+    playMusic('celebration');
+    playSound('confetti');
+    playSound('levelUp');
+    
     const timer = setTimeout(() => setShowContent(true), 300);
     return () => clearTimeout(timer);
-  }, []);
+  }, [playMusic, playSound]);
+
+  const handleContinue = () => {
+    playSound('click');
+    onContinue();
+  };
 
   // Generate confetti particles
   const confettiColors = ['#fbbf24', '#34d399', '#f472b6', '#60a5fa', '#a78bfa', '#fb923c'];
@@ -173,7 +185,7 @@ export const LocationCompletionOverlay: React.FC<LocationCompletionOverlayProps>
           <Button
             variant="adventure"
             size="lg"
-            onClick={onContinue}
+            onClick={handleContinue}
             className="w-full text-xl py-6 animate-pulse-gentle"
           >
             Continue Journey →
