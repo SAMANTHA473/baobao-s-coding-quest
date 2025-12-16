@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { CoinDisplay } from '@/components/game/CoinDisplay';
+import { LocationCompletionOverlay } from '@/components/game/LocationCompletionOverlay';
 import { useGame } from '@/contexts/GameContext';
 import { getPuzzleByLevel, getLocationForLevel } from '@/data/puzzles/index';
 import { ArrowLeft, Lightbulb, TreeDeciduous, Mountain, Castle } from 'lucide-react';
@@ -14,6 +15,7 @@ const AdventureScreen: React.FC = () => {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showResult, setShowResult] = useState<'success' | 'failure' | null>(null);
   const [showHint, setShowHint] = useState(false);
+  const [showLocationComplete, setShowLocationComplete] = useState<'forest' | 'desert' | 'castle' | null>(null);
 
   const currentPuzzle = getPuzzleByLevel(gameState.currentLevel);
 
@@ -64,6 +66,20 @@ const AdventureScreen: React.FC = () => {
   const handleContinue = () => {
     if (showResult === 'success') {
       const nextLevel = gameState.currentLevel + 1;
+      const currentLevel = gameState.currentLevel;
+      
+      // Check if completed a location (level 10, 20, or 30)
+      const isLocationComplete = currentLevel === 10 || currentLevel === 20 || currentLevel === 30;
+      
+      if (isLocationComplete) {
+        // Show location completion overlay
+        const completedLocation = currentLevel === 10 ? 'forest' : currentLevel === 20 ? 'desert' : 'castle';
+        setShowLocationComplete(completedLocation);
+        setShowResult(null);
+        setSelectedAnswer(null);
+        setShowHint(false);
+        return;
+      }
       
       // Check if all 30 levels are completed
       if (nextLevel > 30) {
@@ -81,6 +97,30 @@ const AdventureScreen: React.FC = () => {
     setShowResult(null);
     setSelectedAnswer(null);
     setShowHint(false);
+  };
+
+  const handleLocationCompleteContinue = () => {
+    const currentLevel = gameState.currentLevel;
+    
+    // If completed Castle (level 30), go to final story
+    if (currentLevel === 30) {
+      navigate('/final-story');
+      return;
+    }
+    
+    // Navigate to quest map with animation flag
+    const nextLevel = currentLevel + 1;
+    setCurrentLevel(nextLevel);
+    const newLocation = getLocationForLevel(nextLevel);
+    setCurrentLocation(newLocation);
+    
+    // Navigate to quest map with state to trigger animation
+    navigate('/quest-map', { 
+      state: { 
+        justCompleted: showLocationComplete,
+        newlyUnlocked: newLocation
+      } 
+    });
   };
 
   const locationData = {
@@ -277,6 +317,14 @@ const AdventureScreen: React.FC = () => {
             )}
           </div>
         </div>
+      )}
+
+      {/* Location Completion Overlay */}
+      {showLocationComplete && (
+        <LocationCompletionOverlay
+          locationId={showLocationComplete}
+          onContinue={handleLocationCompleteContinue}
+        />
       )}
     </div>
   );
