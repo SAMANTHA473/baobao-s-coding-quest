@@ -1,16 +1,28 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { BaoBaoCharacter } from '@/components/game/BaoBaoCharacter';
 import { CoinDisplay } from '@/components/game/CoinDisplay';
 import { useGame } from '@/contexts/GameContext';
 import { isLocationUnlocked, getLocationForLevel } from '@/data/puzzles/index';
-import { TreeDeciduous, Mountain, Castle, Check, ArrowLeft, Lock } from 'lucide-react';
+import { TreeDeciduous, Mountain, Castle, Check, ArrowLeft, Lock, Sparkles } from 'lucide-react';
+
+interface LocationState {
+  justCompleted?: 'forest' | 'desert' | 'castle';
+  newlyUnlocked?: 'forest' | 'desert' | 'castle';
+}
 
 const QuestMapScreen: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { gameState, setCurrentLevel, setCurrentLocation } = useGame();
   const [hoveredLocation, setHoveredLocation] = useState<string | null>(null);
+  
+  // Animation states
+  const locationState = location.state as LocationState | null;
+  const [showUnlockAnimation, setShowUnlockAnimation] = useState(false);
+  const [animatingBaoBao, setAnimatingBaoBao] = useState(false);
+  const [showNewChallengeMessage, setShowNewChallengeMessage] = useState(false);
 
   const getCompletedLevelsForLocation = (locationId: string) => {
     if (locationId === 'forest') {
@@ -67,10 +79,40 @@ const QuestMapScreen: React.FC = () => {
 
   const currentLocation = getLocationForLevel(gameState.currentLevel);
 
-  const handleLocationClick = (location: typeof locations[0]) => {
-    if (!location.unlocked) return;
-    setCurrentLevel(location.startLevel);
-    setCurrentLocation(location.id as 'forest' | 'desert' | 'castle');
+  // Handle unlock animation when arriving from completed location
+  useEffect(() => {
+    if (locationState?.justCompleted && locationState?.newlyUnlocked) {
+      // Start animation sequence
+      setAnimatingBaoBao(true);
+      
+      // After BaoBao walks, show unlock animation
+      const unlockTimer = setTimeout(() => {
+        setAnimatingBaoBao(false);
+        setShowUnlockAnimation(true);
+      }, 1500);
+      
+      // Show new challenge message
+      const messageTimer = setTimeout(() => {
+        setShowNewChallengeMessage(true);
+      }, 2500);
+      
+      // Clear location state after animations
+      const cleanupTimer = setTimeout(() => {
+        window.history.replaceState({}, document.title);
+      }, 5000);
+
+      return () => {
+        clearTimeout(unlockTimer);
+        clearTimeout(messageTimer);
+        clearTimeout(cleanupTimer);
+      };
+    }
+  }, [locationState]);
+
+  const handleLocationClick = (locationItem: typeof locations[0]) => {
+    if (!locationItem.unlocked) return;
+    setCurrentLevel(locationItem.startLevel);
+    setCurrentLocation(locationItem.id as 'forest' | 'desert' | 'castle');
     navigate('/adventure');
   };
 
@@ -128,28 +170,42 @@ const QuestMapScreen: React.FC = () => {
 
         {/* Locations */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full relative z-10">
-          {locations.map((location, index) => {
-            const Icon = location.icon;
-            const isHovered = hoveredLocation === location.id;
+          {locations.map((locationItem, index) => {
+            const Icon = locationItem.icon;
+            const isHovered = hoveredLocation === locationItem.id;
+            const isNewlyUnlocked = locationState?.newlyUnlocked === locationItem.id;
+            const isJustCompleted = locationState?.justCompleted === locationItem.id;
+            const isFullyCompleted = locationItem.completed === 10;
 
             return (
               <div
-                key={location.id}
+                key={locationItem.id}
                 className={`relative animate-slide-up`}
                 style={{ animationDelay: `${index * 0.2}s` }}
-                onMouseEnter={() => setHoveredLocation(location.id)}
+                onMouseEnter={() => setHoveredLocation(locationItem.id)}
                 onMouseLeave={() => setHoveredLocation(null)}
-                onClick={() => handleLocationClick(location)}
+                onClick={() => handleLocationClick(locationItem)}
               >
                 <div
                   className={`
-                    card-fantasy p-6 text-center transition-all duration-300 cursor-pointer
-                    ${location.unlocked ? 'hover:scale-105 hover:shadow-glow-gold' : 'opacity-60 cursor-not-allowed grayscale'}
-                    ${isHovered && location.unlocked ? 'border-primary shadow-glow-gold' : ''}
+                    card-fantasy p-6 text-center transition-all duration-300 cursor-pointer relative overflow-hidden
+                    ${locationItem.unlocked ? 'hover:scale-105 hover:shadow-glow-gold' : 'opacity-60 cursor-not-allowed grayscale'}
+                    ${isHovered && locationItem.unlocked ? 'border-primary shadow-glow-gold' : ''}
+                    ${isNewlyUnlocked && showUnlockAnimation ? 'animate-unlock-glow border-primary' : ''}
+                    ${isFullyCompleted ? 'border-green-400/50' : ''}
                   `}
                 >
+                  {/* Completed stamp overlay */}
+                  {isFullyCompleted && (
+                    <div className="absolute top-4 right-4 z-20">
+                      <div className="bg-green-500 text-white rounded-full p-2 shadow-lg transform rotate-12 animate-bounce-slow">
+                        <Check className="w-6 h-6" />
+                      </div>
+                    </div>
+                  )}
+
                   {/* Lock overlay */}
-                  {!location.unlocked && (
+                  {!locationItem.unlocked && (
                     <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm rounded-3xl flex flex-col items-center justify-center z-10 gap-2">
                       <Lock className="w-10 h-10 text-white/80" />
                       <span className="font-display text-sm text-white/80">Complete previous location</span>
@@ -159,9 +215,10 @@ const QuestMapScreen: React.FC = () => {
                   {/* Icon */}
                   <div
                     className={`
-                      w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${location.color}
+                      w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${locationItem.color}
                       flex items-center justify-center shadow-lg
-                      ${isHovered && location.unlocked ? 'animate-bounce-slow' : ''}
+                      ${isHovered && locationItem.unlocked ? 'animate-bounce-slow' : ''}
+                      ${isNewlyUnlocked && showUnlockAnimation ? 'animate-pulse-glow' : ''}
                     `}
                   >
                     <Icon className="w-10 h-10 text-white" />
@@ -169,46 +226,67 @@ const QuestMapScreen: React.FC = () => {
 
                   {/* Content */}
                   <h3 className="font-display text-xl font-bold text-foreground mb-2">
-                    {location.name}
+                    {locationItem.name}
                   </h3>
                   <p className="font-body text-sm text-muted-foreground mb-3">
-                    {location.description}
+                    {locationItem.description}
                   </p>
                   <div className="flex items-center justify-center gap-2 flex-wrap">
                     <div className="inline-block bg-muted px-3 py-1 rounded-full">
                       <span className="font-display text-sm font-semibold text-muted-foreground">
-                        Levels {location.levels}
+                        Levels {locationItem.levels}
                       </span>
                     </div>
-                    {location.completed === 10 && (
-                      <div className="inline-flex items-center gap-1 bg-green-500 text-white px-2 py-1 rounded-full">
-                        <Check className="w-3 h-3" />
-                        <span className="font-display text-xs font-semibold">Complete!</span>
+                    {isFullyCompleted && (
+                      <div className="inline-flex items-center gap-1 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-3 py-1 rounded-full shadow-md">
+                        <Check className="w-4 h-4" />
+                        <span className="font-display text-sm font-bold">CLEARED!</span>
                       </div>
                     )}
                   </div>
-                  {location.unlocked && location.completed < 10 && (
+                  {locationItem.unlocked && locationItem.completed < 10 && (
                     <p className="font-body text-xs text-muted-foreground mt-2">
-                      {location.completed}/10 completed
+                      {locationItem.completed}/10 completed
                     </p>
                   )}
 
                   {/* Play button for unlocked locations */}
-                  {location.unlocked && (
+                  {locationItem.unlocked && (
                     <Button
-                      variant={location.id === 'forest' ? 'forest' : location.id === 'desert' ? 'coral' : 'castle'}
+                      variant={locationItem.id === 'forest' ? 'forest' : locationItem.id === 'desert' ? 'coral' : 'castle'}
                       size="sm"
                       className="mt-4"
                     >
-                      {location.completed === 10 ? 'Replay' : location.completed > 0 ? 'Continue' : 'Start'} →
+                      {isFullyCompleted ? 'Replay' : locationItem.completed > 0 ? 'Continue' : 'Start'} →
                     </Button>
                   )}
                 </div>
 
-                {/* BaoBao indicator for current location */}
-                {location.id === currentLocation && location.unlocked && (
+                {/* BaoBao indicator - animated when transitioning */}
+                {locationItem.id === currentLocation && locationItem.unlocked && !animatingBaoBao && (
                   <div className="absolute -top-8 left-1/2 -translate-x-1/2">
                     <BaoBaoCharacter size="sm" emotion="excited" />
+                  </div>
+                )}
+
+                {/* Animating BaoBao from completed to new location */}
+                {isJustCompleted && animatingBaoBao && (
+                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 animate-path-walk">
+                    <BaoBaoCharacter size="sm" emotion="happy" animate />
+                  </div>
+                )}
+
+                {/* New challenge message */}
+                {isNewlyUnlocked && showNewChallengeMessage && (
+                  <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 w-48 animate-slide-up">
+                    <div className="bg-primary text-primary-foreground px-4 py-2 rounded-xl shadow-lg text-center">
+                      <div className="flex items-center justify-center gap-1 mb-1">
+                        <Sparkles className="w-4 h-4" />
+                        <span className="font-display text-sm font-bold">NEW!</span>
+                        <Sparkles className="w-4 h-4" />
+                      </div>
+                      <p className="font-body text-xs">A new challenge awaits!</p>
+                    </div>
                   </div>
                 )}
               </div>
