@@ -5,196 +5,192 @@ export const castlePuzzles: Puzzle[] = [
     id: 21,
     level: 21,
     location: 'castle',
-    title: 'Function Declaration',
-    description: 'Which function declaration is correct?',
-    code: `// Option A:
-function greet(name) {
-  return "Hello " + name;
-}
-
-// Option B:
-function greet(name)
-  return "Hello " + name;`,
+    title: 'What is Syntax?',
+    description: 'What is syntax in programming?',
+    code: `// Every language has rules for writing
+// In programming, we call these rules...`,
     options: [
-      'Only Option A is correct',
-      'Only Option B is correct',
-      'Both are correct',
-      'Neither is correct',
+      'A type of loop',
+      'The rules for writing code correctly',
+      'A programming language',
+      'A type of bug',
     ],
-    correctAnswer: 0,
-    hint: 'Function bodies need curly braces...',
-    explanation: 'Option A is correct. Option B is missing curly braces {} around the function body.',
+    correctAnswer: 1,
+    hint: 'It\'s like grammar rules for code...',
+    explanation: 'Syntax is the set of rules that defines how code must be written in a programming language, like grammar for human languages.',
   },
   {
     id: 22,
     level: 22,
     location: 'castle',
-    title: 'Arrow Function Syntax',
-    description: 'Which arrow function syntax is valid?',
-    code: `// Which is correct?
-const add = (a, b) => a + b;
-const add = (a, b) => { a + b };
-const add = (a, b) -> a + b;`,
+    title: 'What is a Function?',
+    description: 'What is a function?',
+    code: `function greet(name) {
+  return "Hello, " + name;
+}
+
+greet("BaoBao"); // Returns "Hello, BaoBao"`,
     options: [
-      'First one only',
-      'First and second',
-      'All three are valid',
-      'None are valid',
+      'A type of variable',
+      'A reusable block of code',
+      'An error message',
+      'A loop counter',
     ],
-    correctAnswer: 0,
-    hint: 'Arrow functions use => and need return with braces...',
-    explanation: 'Only the first is correct. The second needs "return" with braces. The third uses -> instead of =>.',
+    correctAnswer: 1,
+    hint: 'You can use it again and again...',
+    explanation: 'A function is a reusable block of code that performs a specific task. You can call it multiple times with different inputs.',
   },
   {
     id: 23,
     level: 23,
     location: 'castle',
-    title: 'Template Literals',
-    description: 'What\'s the correct way to use template literals?',
-    code: `let name = "BaoBao";
-let age = 5;
-// Goal: "BaoBao is 5 years old"`,
+    title: 'Assignment Symbol',
+    description: 'What symbol assigns a value to a variable?',
+    code: `let score ___ 100;
+// Which symbol goes in the blank?`,
     options: [
-      '`${name} is ${age} years old`',
-      '"${name} is ${age} years old"',
-      '`{name} is {age} years old`',
-      '`$name is $age years old`',
+      ':',
+      '=',
+      '==',
+      '->',
     ],
-    correctAnswer: 0,
-    hint: 'Template literals use backticks and ${...}',
-    explanation: 'Template literals use backticks (`) with ${variable} syntax for interpolation.',
+    correctAnswer: 1,
+    hint: 'It\'s the equals sign, but just one of them...',
+    explanation: 'The single equals sign (=) is used to assign a value to a variable. score = 100 means "store 100 in score".',
   },
   {
     id: 24,
     level: 24,
     location: 'castle',
-    title: 'Object Shorthand',
-    description: 'What does this shorthand create?',
-    code: `let name = "BaoBao";
-let color = "green";
-let dragon = { name, color };`,
+    title: 'If Statement Purpose',
+    description: 'What is an if statement used for?',
+    code: `if (age >= 18) {
+  console.log("You can vote!");
+} else {
+  console.log("Too young to vote.");
+}`,
     options: [
-      '{ name: "name", color: "color" }',
-      '{ name: "BaoBao", color: "green" }',
-      '{ "name", "color" }',
-      'Syntax error',
+      'To repeat code',
+      'To make decisions in code',
+      'To create variables',
+      'To end the program',
     ],
     correctAnswer: 1,
-    hint: 'Property shorthand uses variable names as keys...',
-    explanation: 'Object shorthand { name, color } is equivalent to { name: name, color: color }, using variable values.',
+    hint: 'It lets your code choose between different paths...',
+    explanation: 'An if statement is used to make decisions in code. It runs different code depending on whether a condition is true or false.',
   },
   {
     id: 25,
     level: 25,
     location: 'castle',
-    title: 'Destructuring Arrays',
-    description: 'What values do a and b get?',
-    code: `const [a, b] = [1, 2, 3, 4, 5];
-console.log(a, b);`,
+    title: 'Double Equals',
+    description: 'What does == check?',
+    code: `let a = 5;
+let b = 5;
+
+if (a == b) {
+  console.log("They are equal!");
+}`,
     options: [
-      '1 2',
-      '[1, 2, 3, 4, 5] undefined',
-      '1 [2, 3, 4, 5]',
-      'Syntax error',
+      'Assigns a value',
+      'Checks if two values are equal',
+      'Adds two numbers',
+      'Creates a new variable',
     ],
-    correctAnswer: 0,
-    hint: 'Array destructuring assigns in order...',
-    explanation: 'Array destructuring assigns elements in order: a gets 1, b gets 2. Extra elements are ignored.',
+    correctAnswer: 1,
+    hint: 'Double equals compares values...',
+    explanation: 'The double equals (==) checks if two values are equal. It returns true if they match, false if they don\'t.',
   },
   {
     id: 26,
     level: 26,
     location: 'castle',
-    title: 'Spread Operator',
-    description: 'What does the spread operator do here?',
-    code: `const arr1 = [1, 2];
-const arr2 = [3, 4];
-const combined = [...arr1, ...arr2];`,
+    title: 'What is a String?',
+    description: 'What is a string?',
+    code: `let message = "Hello, World!";
+let name = 'BaoBao';`,
     options: [
-      '[1, 2, 3, 4]',
-      '[[1, 2], [3, 4]]',
-      '[...arr1, ...arr2]',
-      'Error: invalid syntax',
+      'A number with decimals',
+      'Text data in quotes',
+      'A true/false value',
+      'A list of items',
     ],
-    correctAnswer: 0,
-    hint: 'Spread "expands" array elements...',
-    explanation: 'The spread operator (...) expands arrays into individual elements, creating [1, 2, 3, 4].',
+    correctAnswer: 1,
+    hint: 'It\'s text wrapped in quotation marks...',
+    explanation: 'A string is text data enclosed in quotes. It can contain letters, numbers, symbols, and spaces.',
   },
   {
     id: 27,
     level: 27,
     location: 'castle',
-    title: 'Ternary Operator',
-    description: 'What value does result get?',
-    code: `let score = 85;
-let result = score >= 60 ? "Pass" : "Fail";`,
+    title: 'String Syntax',
+    description: 'Which is the correct way to write "Hello" as a string?',
+    code: `// Which one is a valid string?`,
     options: [
-      '"Pass"',
-      '"Fail"',
-      'true',
-      '85',
+      'Hello',
+      '"Hello"',
+      '(Hello)',
+      '[Hello]',
     ],
-    correctAnswer: 0,
-    hint: 'condition ? valueIfTrue : valueIfFalse',
-    explanation: 'The ternary operator checks if score >= 60 (true), so result gets "Pass".',
+    correctAnswer: 1,
+    hint: 'Strings need quotation marks around them...',
+    explanation: '"Hello" is correct because strings must be wrapped in quotation marks (single \' or double ").',
   },
   {
     id: 28,
     level: 28,
     location: 'castle',
-    title: 'Optional Chaining',
-    description: 'What does this code return?',
-    code: `const user = { name: "BaoBao" };
-console.log(user?.address?.city);`,
+    title: 'Boolean Values',
+    description: 'What is a Boolean value?',
+    code: `let isHappy = true;
+let isSad = false;`,
     options: [
-      'undefined',
-      'null',
-      'Error: Cannot read property',
-      '""',
+      'A number between 0 and 10',
+      'True or False',
+      'A text message',
+      'A list of options',
     ],
-    correctAnswer: 0,
-    hint: 'Optional chaining (?.) safely accesses nested properties...',
-    explanation: 'Optional chaining returns undefined if address doesn\'t exist, instead of throwing an error.',
+    correctAnswer: 1,
+    hint: 'It can only be one of two things...',
+    explanation: 'A Boolean value can only be true or false. It\'s used for yes/no decisions and conditions.',
   },
   {
     id: 29,
     level: 29,
     location: 'castle',
-    title: 'Nullish Coalescing',
-    description: 'What values trigger the default?',
-    code: `let value = null;
-let result = value ?? "default";
-// What about: value = 0 ?? "default"?`,
+    title: 'Return Statement',
+    description: 'What does "return" do?',
+    code: `function add(a, b) {
+  return a + b;
+}
+
+let result = add(3, 5); // result = 8`,
     options: [
-      'null and undefined only',
-      'null, undefined, 0, and ""',
-      'Any falsy value',
-      'Only undefined',
+      'Ends the program',
+      'Sends a value back from the function',
+      'Prints text to screen',
+      'Creates a new function',
     ],
-    correctAnswer: 0,
-    hint: '?? only checks for null/undefined, not other falsy values...',
-    explanation: 'Nullish coalescing (??) only uses the default for null or undefined, not 0 or empty string.',
+    correctAnswer: 1,
+    hint: 'The function gives something back...',
+    explanation: 'The return statement sends a value back from the function to wherever it was called. The function then ends.',
   },
   {
     id: 30,
     level: 30,
     location: 'castle',
-    title: 'Castle Syntax Master',
-    description: 'Fix all the syntax errors in this code!',
-    code: `const dragon = {
-  name = "BaoBao",
-  speak: () {
-    console.log(\`I am \${this.name}\`)
-  }
-}`,
+    title: 'Arrays and Lists',
+    description: 'What is an array / list?',
+    code: `let fruits = ["apple", "banana", "cherry"];
+let numbers = [1, 2, 3, 4, 5];`,
     options: [
-      'Use : instead of = for properties, add => for arrow function',
-      'Only change = to :',
-      'Only add => after ()',
-      'The code is correct',
+      'A single value',
+      'A collection of values stored together',
+      'A type of function',
+      'A loop counter',
     ],
-    correctAnswer: 0,
-    hint: 'Object properties use colons, arrow functions need =>...',
-    explanation: 'Two fixes: 1) name: "BaoBao" (colon not equals), 2) speak: () => { (arrow function syntax).',
+    correctAnswer: 1,
+    hint: 'It holds multiple items in one place...',
+    explanation: 'An array (or list) is a collection of values stored together in a single variable. You can access items by their position (index).',
   },
 ];

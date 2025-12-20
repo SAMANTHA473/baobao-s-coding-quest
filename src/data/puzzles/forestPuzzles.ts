@@ -5,195 +5,190 @@ export const forestPuzzles: Puzzle[] = [
     id: 1,
     level: 1,
     location: 'forest',
-    title: 'Find the Bug!',
-    description: 'BaoBao found some code, but there\'s a bug! Which line has the error?',
-    code: `function sayHello() {
-  console.log("Hello, World!")
-  console.log("Welcome to coding!"
-}`,
+    title: 'What is a Bug?',
+    description: 'What is a "bug" in programming?',
+    code: `// In programming, we often encounter "bugs"
+// But what exactly is a bug?`,
     options: [
-      'Line 1: Missing parentheses',
-      'Line 2: Wrong quotes',
-      'Line 3: Missing closing parenthesis',
-      'No bugs here!',
+      'A tiny insect',
+      'An error in code',
+      'A feature',
+      'A type of variable',
     ],
-    correctAnswer: 2,
-    hint: 'Look carefully at the parentheses on each line...',
-    explanation: 'Line 3 is missing a closing parenthesis ")" at the end of the console.log statement.',
+    correctAnswer: 1,
+    hint: 'Think about what goes wrong when code doesn\'t work...',
+    explanation: 'A bug in programming is an error in code that causes it to behave unexpectedly or incorrectly.',
   },
   {
     id: 2,
     level: 2,
     location: 'forest',
-    title: 'Variable Detective',
-    description: 'Help BaoBao fix this variable declaration!',
-    code: `let my name = "BaoBao";
-console.log(my name);`,
+    title: 'End of Line',
+    description: 'Which symbol is often used to end a line of code in many programming languages?',
+    code: `// Many programming languages use a special
+// symbol to mark the end of a statement
+let x = 5___`,
     options: [
-      'Variable names cannot have spaces',
-      'Should use const instead of let',
-      'Missing semicolon',
-      'Nothing is wrong',
+      'Period (.)',
+      'Semicolon (;)',
+      'Comma (,)',
+      'Question mark (?)',
     ],
-    correctAnswer: 0,
-    hint: 'Think about what makes a valid variable name...',
-    explanation: 'Variable names in JavaScript cannot contain spaces. It should be "myName" or "my_name".',
+    correctAnswer: 1,
+    hint: 'It looks like a period with a comma underneath...',
+    explanation: 'The semicolon (;) is commonly used to end statements in languages like JavaScript, Java, C, and more.',
   },
   {
     id: 3,
     level: 3,
     location: 'forest',
-    title: 'String Surgery',
-    description: 'What\'s wrong with this string?',
-    code: `let message = "Hello, I said "Hi there!" to my friend";`,
+    title: 'Debugging Defined',
+    description: 'What does "debugging" mean?',
+    code: `// A programmer found a problem in their code
+// They need to "debug" it. What does that mean?`,
     options: [
-      'The string is too long',
-      'Quotes inside quotes need to be escaped',
-      'Should use single quotes',
-      'Missing variable type',
+      'Adding more bugs',
+      'Finding and fixing errors',
+      'Writing new code',
+      'Deleting a program',
     ],
     correctAnswer: 1,
-    hint: 'How do you include quotes inside a quoted string?',
-    explanation: 'When using quotes inside a string, you need to escape them with a backslash (\\") or use different quote types.',
+    hint: 'Think about what you do to get rid of bugs...',
+    explanation: 'Debugging means finding and fixing errors (bugs) in your code to make it work correctly.',
   },
   {
     id: 4,
     level: 4,
     location: 'forest',
-    title: 'Function Fiasco',
-    description: 'This function won\'t run! Can you spot why?',
-    code: `function addNumbers(a, b)
-  return a + b;
-}`,
+    title: 'Printing Text',
+    description: 'Which of these is a common way to print text in Python?',
+    code: `# In Python, we want to display "Hello World"
+# Which function should we use?
+
+___("Hello World")`,
     options: [
-      'Missing opening curly brace {',
-      'Parameters are wrong',
-      'Return statement is incorrect',
-      'Function name is invalid',
+      'echo()',
+      'print()',
+      'say()',
+      'write()',
     ],
-    correctAnswer: 0,
-    hint: 'Functions need both an opening and closing brace...',
-    explanation: 'The function is missing an opening curly brace "{" after the parameters.',
+    correctAnswer: 1,
+    hint: 'The function name describes what it does - showing output...',
+    explanation: 'In Python, print() is the built-in function used to display text and values on the screen.',
   },
   {
     id: 5,
     level: 5,
     location: 'forest',
-    title: 'Array Adventure',
-    description: 'Help BaoBao access the correct element!',
-    code: `let fruits = ["apple", "banana", "cherry"];
-let firstFruit = fruits[1];
-// BaoBao wants the first fruit!`,
+    title: 'Variable Basics',
+    description: 'What is a variable in programming?',
+    code: `// Variables are fundamental in programming
+let myAge = 10;
+let myName = "BaoBao";`,
     options: [
-      'Use fruits[0] instead',
-      'Use fruits.first()',
-      'Use fruits[-1]',
-      'This code is correct',
+      'A type of bug',
+      'A container for storing data',
+      'A programming language',
+      'A computer part',
     ],
-    correctAnswer: 0,
-    hint: 'Arrays in JavaScript start counting from 0...',
-    explanation: 'Array indices start at 0. fruits[0] gives "apple", fruits[1] gives "banana".',
+    correctAnswer: 1,
+    hint: 'Think of it like a labeled box that holds something...',
+    explanation: 'A variable is a container for storing data values. It has a name and holds information you can use and change.',
   },
   {
     id: 6,
     level: 6,
     location: 'forest',
-    title: 'Comparison Confusion',
-    description: 'Why does this comparison give unexpected results?',
-    code: `let age = "25";
-if (age == 25) {
-  console.log("You are 25!");
-}`,
+    title: 'HTML Meaning',
+    description: 'What does HTML stand for?',
+    code: `<!-- HTML is used to create web pages -->
+<html>
+  <body>
+    <h1>Hello World!</h1>
+  </body>
+</html>`,
     options: [
-      'Nothing wrong, it works correctly',
-      'Should use === for strict comparison',
-      'Cannot compare string and number',
-      'If statement syntax is wrong',
+      'Hyper Text Markup Language',
+      'High Tech Modern Language',
+      'Home Tool Markup Language',
+      'Hyperlink Text Machine Language',
     ],
-    correctAnswer: 1,
-    hint: 'There\'s a difference between == and ===...',
-    explanation: 'Using === would be safer as it checks both value AND type. "25" == 25 is true, but "25" === 25 is false.',
+    correctAnswer: 0,
+    hint: 'It\'s used to mark up and structure text on the web...',
+    explanation: 'HTML stands for Hyper Text Markup Language. It\'s the standard language for creating web pages.',
   },
   {
     id: 7,
     level: 7,
     location: 'forest',
-    title: 'Loop Logic',
-    description: 'This loop runs forever! How do we fix it?',
-    code: `let count = 0;
-while (count < 5) {
-  console.log(count);
-}`,
+    title: 'Not a Language',
+    description: 'Which of these is NOT a programming language?',
+    code: `// Some of these are programming languages
+// One of them is something else entirely!`,
     options: [
-      'Change < to <=',
-      'Add count++ inside the loop',
-      'Use a for loop instead',
-      'The condition is wrong',
+      'Python',
+      'Java',
+      'Microsoft Word',
+      'JavaScript',
     ],
-    correctAnswer: 1,
-    hint: 'What makes a while loop eventually stop?',
-    explanation: 'The loop needs count++ to increment the counter, otherwise count stays at 0 forever.',
+    correctAnswer: 2,
+    hint: 'Think about which one you use to write documents...',
+    explanation: 'Microsoft Word is a word processing application, not a programming language. Python, Java, and JavaScript are all programming languages.',
   },
   {
     id: 8,
     level: 8,
     location: 'forest',
-    title: 'Object Obstacle',
-    description: 'Help BaoBao access the dragon\'s name!',
-    code: `let dragon = {
-  name: "BaoBao",
-  age: 5
-};
-console.log(dragon[name]);`,
+    title: 'Code Comments',
+    description: 'What is a comment in code used for?',
+    code: `// This is a comment in JavaScript
+# This is a comment in Python
+
+/* Comments are special! */`,
     options: [
-      'Use dragon.name or dragon["name"]',
-      'Use dragon->name',
-      'Use dragon.getName()',
-      'The object is defined wrong',
+      'Making the program run faster',
+      'Explaining what the code does',
+      'Creating bugs',
+      'Deleting code',
     ],
-    correctAnswer: 0,
-    hint: 'How do you access object properties?',
-    explanation: 'Use dot notation (dragon.name) or bracket notation with quotes (dragon["name"]).',
+    correctAnswer: 1,
+    hint: 'Comments help humans understand the code...',
+    explanation: 'Comments are used to explain what the code does. They are ignored by the computer but help programmers understand the code.',
   },
   {
     id: 9,
     level: 9,
     location: 'forest',
-    title: 'Semicolon Search',
-    description: 'Find where the missing semicolon is needed!',
-    code: `let x = 5
-let y = 10
-let sum = x + y
-console.log(sum)`,
+    title: 'Python Comments',
+    description: 'What symbol starts a comment in Python?',
+    code: `___ This is a comment in Python
+print("Hello World")`,
     options: [
-      'After every line',
-      'Only after line 3',
-      'Semicolons are optional in JavaScript',
-      'Only before console.log',
+      '//',
+      '#',
+      '/*',
+      '--',
     ],
-    correctAnswer: 2,
-    hint: 'JavaScript has automatic semicolon insertion...',
-    explanation: 'Semicolons are technically optional in JavaScript due to ASI (Automatic Semicolon Insertion), though many developers prefer adding them.',
+    correctAnswer: 1,
+    hint: 'It\'s a symbol often called a "hash" or "pound" sign...',
+    explanation: 'In Python, the # symbol starts a single-line comment. Everything after # on that line is ignored.',
   },
   {
     id: 10,
     level: 10,
     location: 'forest',
-    title: 'Final Forest Challenge',
-    description: 'Find ALL the bugs in this code!',
-    code: `function greeting(name)
-  const message = "Hello " + name
-  console.log(mesage);
-  return message
-}`,
+    title: 'Problem Solving First Step',
+    description: 'What is the first step in solving a programming problem?',
+    code: `// You have a programming task to complete
+// What should you do FIRST?`,
     options: [
-      'Missing {, typo in "mesage"',
-      'Only missing opening brace',
-      'Only the typo "mesage"',
-      'Nothing is wrong',
+      'Write code immediately',
+      'Turn off the computer',
+      'Understand the problem',
+      'Delete all files',
     ],
-    correctAnswer: 0,
-    hint: 'Look for multiple issues...',
-    explanation: 'Two bugs: 1) Missing opening brace { after function declaration, 2) "mesage" should be "message".',
+    correctAnswer: 2,
+    hint: 'Before you can solve something, you need to know what it is...',
+    explanation: 'Understanding the problem is always the first step! You can\'t write a good solution without knowing exactly what you\'re trying to solve.',
   },
 ];
