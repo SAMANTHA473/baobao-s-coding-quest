@@ -5,205 +5,201 @@ export const desertPuzzles: Puzzle[] = [
     id: 11,
     level: 11,
     location: 'desert',
-    title: 'For Loop Fundamentals',
-    description: 'How many times will this loop run?',
-    code: `for (let i = 0; i < 5; i++) {
-  console.log(i);
+    title: 'What is a Loop?',
+    description: 'What is a loop in programming?',
+    code: `// Loops help us repeat actions
+for (let i = 0; i < 5; i++) {
+  console.log("Hello!");
 }`,
     options: [
-      '4 times',
-      '5 times',
-      '6 times',
-      'Infinite times',
+      'Code that runs once and stops',
+      'Code that repeats multiple times',
+      'Code that never runs',
+      'Code that deletes itself',
     ],
     correctAnswer: 1,
-    hint: 'Count from 0 up to (but not including) 5...',
-    explanation: 'The loop runs 5 times: i = 0, 1, 2, 3, 4. When i becomes 5, the condition i < 5 is false.',
+    hint: 'Think about going around in circles...',
+    explanation: 'A loop is a programming structure that repeats a block of code multiple times until a condition is met.',
   },
   {
     id: 12,
     level: 12,
     location: 'desert',
-    title: 'While Loop Wonder',
-    description: 'What will be the final value of x?',
-    code: `let x = 1;
-while (x < 10) {
-  x = x * 2;
-}
-console.log(x);`,
+    title: 'Best Loop Choice',
+    description: 'Which loop is best when you know exactly how many times to repeat?',
+    code: `// You want to repeat something exactly 10 times
+// Which loop type is best?`,
     options: [
-      '8',
-      '10',
-      '16',
-      '32',
+      'while loop',
+      'for loop',
+      'do-while loop',
+      'infinite loop',
     ],
-    correctAnswer: 2,
-    hint: 'Trace through: 1 → 2 → 4 → 8 → 16...',
-    explanation: 'x doubles each iteration: 1→2→4→8→16. When x=16, it\'s no longer < 10, so the loop stops.',
+    correctAnswer: 1,
+    hint: 'This loop type has the count built right into it...',
+    explanation: 'A for loop is best when you know exactly how many times to repeat, because it has a built-in counter.',
   },
   {
     id: 13,
     level: 13,
     location: 'desert',
-    title: 'Break the Loop',
-    description: 'What number will be printed last?',
-    code: `for (let i = 1; i <= 10; i++) {
-  if (i === 6) {
-    break;
-  }
-  console.log(i);
+    title: 'Never Ending',
+    description: 'What happens if a loop never stops?',
+    code: `while (true) {
+  console.log("Running...");
+  // This never stops!
 }`,
     options: [
-      '5',
-      '6',
-      '10',
-      'Nothing is printed',
+      'The program works perfectly',
+      'An infinite loop occurs',
+      'The computer turns off',
+      'Nothing happens',
     ],
-    correctAnswer: 0,
-    hint: 'What does "break" do inside a loop?',
-    explanation: 'The break statement exits the loop immediately when i equals 6, so 5 is the last number printed.',
+    correctAnswer: 1,
+    hint: 'What do you call something that goes on forever?',
+    explanation: 'When a loop never stops, it\'s called an infinite loop. This usually freezes the program and is considered a bug.',
   },
   {
     id: 14,
     level: 14,
     location: 'desert',
-    title: 'Continue Conundrum',
-    description: 'Which numbers will be skipped?',
-    code: `for (let i = 1; i <= 5; i++) {
-  if (i % 2 === 0) {
-    continue;
-  }
-  console.log(i);
+    title: 'While Loop Condition',
+    description: 'In a while loop, when does the loop stop?',
+    code: `let x = 0;
+while (x < 5) {
+  console.log(x);
+  x++;
 }`,
     options: [
-      'Odd numbers (1, 3, 5)',
-      'Even numbers (2, 4)',
-      'All numbers',
-      'No numbers',
+      'When the condition becomes true',
+      'When the condition becomes false',
+      'After exactly 5 runs',
+      'It never stops',
     ],
     correctAnswer: 1,
-    hint: 'What does i % 2 === 0 check for?',
-    explanation: 'continue skips even numbers (2, 4) because i % 2 === 0 is true for them. Only 1, 3, 5 are printed.',
+    hint: 'The loop keeps going WHILE the condition is true...',
+    explanation: 'A while loop continues as long as its condition is true. It stops when the condition becomes false.',
   },
   {
     id: 15,
     level: 15,
     location: 'desert',
-    title: 'Nested Loop Puzzle',
-    description: 'How many stars (*) will be printed?',
-    code: `for (let i = 0; i < 3; i++) {
-  for (let j = 0; j < 2; j++) {
-    console.log("*");
-  }
-}`,
+    title: 'Range Count',
+    description: 'How many times will this loop run: for i in range(5)?',
+    code: `# Python loop
+for i in range(5):
+    print(i)
+# What gets printed?`,
     options: [
-      '3 stars',
-      '5 stars',
-      '6 stars',
-      '9 stars',
+      '4 times',
+      '5 times',
+      '6 times',
+      '0 times',
     ],
-    correctAnswer: 2,
-    hint: 'Outer loop runs 3 times, inner loop runs 2 times each...',
-    explanation: 'The outer loop runs 3 times, and for each outer iteration, the inner loop runs 2 times. 3 × 2 = 6 stars.',
+    correctAnswer: 1,
+    hint: 'range(5) creates numbers from 0 to 4...',
+    explanation: 'range(5) generates numbers 0, 1, 2, 3, 4 - that\'s 5 numbers, so the loop runs 5 times.',
   },
   {
     id: 16,
     level: 16,
     location: 'desert',
-    title: 'Array Iteration',
-    description: 'What\'s wrong with this loop?',
-    code: `let colors = ["red", "green", "blue"];
-for (let i = 1; i <= colors.length; i++) {
-  console.log(colors[i]);
+    title: 'Loop Counter Purpose',
+    description: 'What is the purpose of a loop counter?',
+    code: `for (let i = 0; i < 10; i++) {
+  // 'i' is the loop counter
+  console.log("Count: " + i);
 }`,
     options: [
-      'Should start at i = 0',
-      'Should use < instead of <=',
-      'Both A and B are correct',
-      'Nothing is wrong',
+      'To make the loop run faster',
+      'To track how many times the loop has run',
+      'To create bugs in the code',
+      'To stop the loop immediately',
     ],
-    correctAnswer: 2,
-    hint: 'Arrays are 0-indexed and have length 3...',
-    explanation: 'Both issues: Start at 0 (not 1) and use < (not <=). Current code skips "red" and tries to access undefined colors[3].',
+    correctAnswer: 1,
+    hint: 'The counter keeps count of iterations...',
+    explanation: 'A loop counter tracks how many times the loop has run. It helps control when the loop should stop.',
   },
   {
     id: 17,
     level: 17,
     location: 'desert',
-    title: 'forEach Magic',
-    description: 'What will this forEach loop print?',
-    code: `let nums = [10, 20, 30];
-nums.forEach((num, index) => {
-  console.log(index + ": " + num);
-});`,
+    title: 'Early Exit',
+    description: 'Which keyword is used to exit a loop early?',
+    code: `for (let i = 0; i < 10; i++) {
+  if (i === 5) {
+    ___; // Exit the loop here
+  }
+}`,
     options: [
-      '1: 10, 2: 20, 3: 30',
-      '0: 10, 1: 20, 2: 30',
-      '10: 0, 20: 1, 30: 2',
-      'Error: forEach is not a function',
+      'stop',
+      'exit',
+      'break',
+      'end',
     ],
-    correctAnswer: 1,
-    hint: 'The second parameter is the index, starting from 0...',
-    explanation: 'forEach provides each element and its 0-based index. Output: 0: 10, 1: 20, 2: 30.',
+    correctAnswer: 2,
+    hint: 'You want to "break" out of the loop...',
+    explanation: 'The break keyword immediately exits the loop, even if the condition is still true.',
   },
   {
     id: 18,
     level: 18,
     location: 'desert',
-    title: 'Do-While Discovery',
-    description: 'What\'s special about do-while loops?',
-    code: `let x = 10;
-do {
-  console.log(x);
-  x++;
-} while (x < 5);`,
+    title: 'Skip Iteration',
+    description: 'Which keyword skips the current iteration and continues to the next?',
+    code: `for (let i = 0; i < 5; i++) {
+  if (i === 2) {
+    ___; // Skip this iteration
+  }
+  console.log(i);
+}`,
     options: [
-      'Nothing is printed',
-      '10 is printed once',
-      'Prints 10, 11, 12, 13, 14',
-      'Infinite loop',
+      'skip',
+      'next',
+      'continue',
+      'pass',
     ],
-    correctAnswer: 1,
-    hint: 'A do-while loop always runs at least once...',
-    explanation: 'do-while executes the block first, then checks the condition. So 10 is printed once, then x=11 fails the x<5 check.',
+    correctAnswer: 2,
+    hint: 'You want to "continue" to the next iteration...',
+    explanation: 'The continue keyword skips the rest of the current iteration and moves to the next one.',
   },
   {
     id: 19,
     level: 19,
     location: 'desert',
-    title: 'Loop Variable Scope',
-    description: 'What will this code output?',
+    title: 'Nested Loops',
+    description: 'What is a nested loop?',
     code: `for (let i = 0; i < 3; i++) {
-  // loop body
-}
-console.log(i);`,
+  for (let j = 0; j < 2; j++) {
+    console.log(i, j);
+  }
+}`,
     options: [
-      '3',
-      '2',
-      'undefined',
-      'Error: i is not defined',
+      'A loop inside another loop',
+      'A loop that runs twice',
+      'A broken loop',
+      'A loop without a counter',
     ],
-    correctAnswer: 3,
-    hint: 'Variables declared with let inside for loops...',
-    explanation: 'Variables declared with let in a for loop are scoped to that loop. Outside the loop, i doesn\'t exist.',
+    correctAnswer: 0,
+    hint: 'One loop is "nested" inside the other like a bird\'s nest...',
+    explanation: 'A nested loop is a loop inside another loop. The inner loop runs completely for each iteration of the outer loop.',
   },
   {
     id: 20,
     level: 20,
     location: 'desert',
-    title: 'Desert Loop Master',
-    description: 'Fix this loop to count down from 5 to 1!',
-    code: `for (let i = 5; i > 0; i++) {
-  console.log(i);
-}`,
+    title: 'Python While Syntax',
+    description: 'Which is the correct way to write a while loop in Python?',
+    code: `# Which syntax is correct for Python?
+x = 0`,
     options: [
-      'Change i++ to i--',
-      'Change i > 0 to i < 0',
-      'Change let i = 5 to let i = 1',
-      'The code is correct',
+      'while (x < 10) { }',
+      'while x < 10 do:',
+      'while x < 10:',
+      'loop while x < 10',
     ],
-    correctAnswer: 0,
-    hint: 'To count down, we need to decrease i...',
-    explanation: 'To count down, change i++ to i--. Currently i++ makes it count up forever (infinite loop).',
+    correctAnswer: 2,
+    hint: 'Python uses a colon and indentation...',
+    explanation: 'In Python, while loops use the syntax "while condition:" followed by indented code. No parentheses or braces needed.',
   },
 ];
