@@ -6,6 +6,7 @@ interface GameState {
   currentLevel: number;
   currentLocation: 'forest' | 'desert' | 'castle';
   completedLevels: number[];
+  completedAdventures: ('forest' | 'desert' | 'castle')[];
   inventory: string[];
   soundEnabled: boolean;
   musicEnabled: boolean;
@@ -24,6 +25,8 @@ interface GameContextType {
   toggleSound: () => void;
   toggleMusic: () => void;
   setMusicVolume: (volume: number) => void;
+  markAdventureComplete: (location: 'forest' | 'desert' | 'castle') => void;
+  isAdventureComplete: (location: 'forest' | 'desert' | 'castle') => boolean;
   resetGame: () => void;
 }
 
@@ -47,6 +50,7 @@ const initialState: GameState = {
   currentLevel: 1,
   currentLocation: 'forest',
   completedLevels: [],
+  completedAdventures: [],
   inventory: [],
   soundEnabled: true,
   musicEnabled: true,
@@ -119,6 +123,17 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setGameState(prev => ({ ...prev, musicVolume: volume }));
   };
 
+  const markAdventureComplete = (location: 'forest' | 'desert' | 'castle') => {
+    setGameState(prev => ({
+      ...prev,
+      completedAdventures: [...new Set([...prev.completedAdventures, location])],
+    }));
+  };
+
+  const isAdventureComplete = (location: 'forest' | 'desert' | 'castle'): boolean => {
+    return gameState.completedAdventures.includes(location);
+  };
+
   const resetGame = () => {
     const resetState = {
       ...initialState,
@@ -126,6 +141,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       soundEnabled: gameState.soundEnabled,
       musicEnabled: gameState.musicEnabled,
       musicVolume: gameState.musicVolume,
+      completedAdventures: [],
     };
     setGameState(resetState);
   };
@@ -144,6 +160,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         toggleSound,
         toggleMusic,
         setMusicVolume,
+        markAdventureComplete,
+        isAdventureComplete,
         resetGame,
       }}
     >

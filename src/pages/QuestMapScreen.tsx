@@ -16,7 +16,7 @@ interface LocationState {
 const QuestMapScreen: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { gameState, setCurrentLevel, setCurrentLocation } = useGame();
+  const { gameState, setCurrentLevel, setCurrentLocation, isAdventureComplete } = useGame();
   const { playSound, playMusic } = useAudio();
   const [hoveredLocation, setHoveredLocation] = useState<string | null>(null);
   
@@ -122,7 +122,17 @@ const QuestMapScreen: React.FC = () => {
     playSound('click');
     setCurrentLevel(locationItem.startLevel);
     setCurrentLocation(locationItem.id as 'forest' | 'desert' | 'castle');
-    navigate('/adventure');
+    
+    // Check if adventure is already complete for this location
+    const adventureComplete = isAdventureComplete(locationItem.id as 'forest' | 'desert' | 'castle');
+    
+    if (adventureComplete || locationItem.completed === 10) {
+      // Skip pre-adventure if already completed or replaying
+      navigate('/adventure');
+    } else {
+      // Show pre-adventure walking screen first
+      navigate('/pre-adventure');
+    }
   };
 
   return (

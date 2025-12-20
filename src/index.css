@@ -287,6 +287,35 @@
   .animate-unlock-glow {
     animation: unlock-glow 1s ease-out forwards;
   }
+
+  /* Character walking animations */
+  .animate-character-walk {
+    animation: character-walk 0.4s ease-in-out infinite;
+  }
+
+  .animate-character-idle {
+    animation: character-idle 2s ease-in-out infinite;
+  }
+
+  .animate-arm-swing {
+    animation: arm-swing 0.4s ease-in-out infinite;
+  }
+
+  .animate-arm-swing-reverse {
+    animation: arm-swing-reverse 0.4s ease-in-out infinite;
+  }
+
+  .animate-leg-walk {
+    animation: leg-walk 0.4s ease-in-out infinite;
+  }
+
+  .animate-leg-walk-reverse {
+    animation: leg-walk-reverse 0.4s ease-in-out infinite;
+  }
+
+  .animate-animal-idle {
+    animation: animal-idle 2s ease-in-out infinite;
+  }
 }
 
 @keyframes float {
@@ -419,6 +448,42 @@
   0% { box-shadow: 0 0 0 0 hsl(38 90% 55% / 0); }
   50% { box-shadow: 0 0 40px 10px hsl(38 90% 55% / 0.6); }
   100% { box-shadow: 0 0 20px 5px hsl(38 90% 55% / 0.3); }
+}
+
+/* Character animations */
+@keyframes character-walk {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes character-idle {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-3px) scale(1.01); }
+}
+
+@keyframes arm-swing {
+  0%, 100% { transform: rotate(-15deg); }
+  50% { transform: rotate(15deg); }
+}
+
+@keyframes arm-swing-reverse {
+  0%, 100% { transform: rotate(15deg); }
+  50% { transform: rotate(-15deg); }
+}
+
+@keyframes leg-walk {
+  0%, 100% { transform: translateY(0) rotate(-10deg); }
+  50% { transform: translateY(2px) rotate(10deg); }
+}
+
+@keyframes leg-walk-reverse {
+  0%, 100% { transform: translateY(2px) rotate(10deg); }
+  50% { transform: translateY(0) rotate(-10deg); }
+}
+
+@keyframes animal-idle {
+  0%, 100% { transform: scale(1) translateY(0); }
+  50% { transform: scale(1.05) translateY(-5px); }
 }
 
 /* Scrollbar styling */
