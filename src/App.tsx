@@ -10,6 +10,7 @@ import WelcomeScreen from "./pages/WelcomeScreen";
 import StoryScreen from "./pages/StoryScreen";
 import QuestMapScreen from "./pages/QuestMapScreen";
 import HomeScreen from "./pages/HomeScreen";
+import PreAdventureScreen from "./pages/PreAdventureScreen";
 import AdventureScreen from "./pages/AdventureScreen";
 import ShopScreen from "./pages/ShopScreen";
 import SettingsScreen from "./pages/SettingsScreen";
@@ -33,6 +34,7 @@ const App = () => (
               <Route path="/story" element={<StoryScreen />} />
               <Route path="/quest-map" element={<QuestMapScreen />} />
               <Route path="/home" element={<HomeScreen />} />
+              <Route path="/pre-adventure" element={<PreAdventureScreen />} />
               <Route path="/adventure" element={<AdventureScreen />} />
               <Route path="/shop" element={<ShopScreen />} />
               <Route path="/settings" element={<SettingsScreen />} />
