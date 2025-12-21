@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useGame } from '@/contexts/GameContext';
-import { Sparkles, Heart, Star } from 'lucide-react';
+import { useAudio } from '@/contexts/AudioContext';
+import { useNarration } from '@/hooks/useNarration';
+import { Sparkles, Heart, Star, Volume2, VolumeX } from 'lucide-react';
 
 // Import final story images
 import finalTriumph from '@/assets/story/final-1-triumph.jpg';
@@ -14,18 +16,24 @@ interface StoryFrame {
   id: number;
   image: string;
   text: string;
-  duration: number;
   animation: 'zoom' | 'pan-left' | 'pan-right';
 }
 
 const FinalStoryScreen: React.FC = () => {
   const navigate = useNavigate();
   const { gameState } = useGame();
+  const { fadeInMusic, fadeOutMusic } = useAudio();
+  const { speak, stop: stopNarration } = useNarration();
+  
   const [currentFrame, setCurrentFrame] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [showSubtitle, setShowSubtitle] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
   const [showThankYou, setShowThankYou] = useState(false);
+  const [isNarrating, setIsNarrating] = useState(false);
+  const [narrationEnabled, setNarrationEnabled] = useState(true);
+  
+  const hasStartedRef = useRef(false);
 
   const playerName = gameState.playerName || 'our brave adventurer';
 
@@ -33,39 +41,44 @@ const FinalStoryScreen: React.FC = () => {
     {
       id: 1,
       image: finalTriumph,
-      text: `After a long and challenging journey through the Forest of Bugs, the Desert of Loops, and the Castle of Syntax, ${playerName} finally helped BaoBao reach the top of the magical island...`,
-      duration: 8000,
+      text: `After a long and challenging journey through the Forest of Bugs, the Desert of Loops, and the Castle of Syntax, ${playerName} finally helped BaoBao reach the top of the magical island.`,
       animation: 'zoom',
     },
     {
       id: 2,
       image: finalIsland,
       text: "The island began to glow with magical light once more. Flowers bloomed, waterfalls sparkled, and hope returned to Dragon Island!",
-      duration: 7000,
       animation: 'pan-left',
     },
     {
       id: 3,
       image: finalApproaching,
-      text: "And then, through the golden light, BaoBao saw her—Mommy Dragon, waiting with open wings and tears of joy...",
-      duration: 7000,
+      text: "And then, through the golden light, BaoBao saw her. Mommy Dragon, waiting with open wings and tears of joy.",
       animation: 'pan-right',
     },
     {
       id: 4,
       image: finalReunion,
-      text: `"My brave little BaoBao!" Mommy Dragon cried, wrapping her wings around her baby. Thanks to ${playerName}, they were finally together again!`,
-      duration: 8000,
+      text: `My brave little BaoBao! Mommy Dragon cried, wrapping her wings around her baby. Thanks to ${playerName}, they were finally together again!`,
       animation: 'zoom',
     },
   ];
 
   const frame = storyFrames[currentFrame];
 
+  // Start story music on mount
+  useEffect(() => {
+    fadeInMusic('story', 2000);
+    return () => {
+      stopNarration();
+    };
+  }, [fadeInMusic, stopNarration]);
+
   const goToNextFrame = useCallback(() => {
     if (currentFrame < storyFrames.length - 1) {
       setIsTransitioning(true);
       setShowSubtitle(false);
+      setIsNarrating(false);
       
       setTimeout(() => {
         setCurrentFrame(prev => prev + 1);
@@ -73,32 +86,62 @@ const FinalStoryScreen: React.FC = () => {
       }, 1500);
     } else {
       setIsComplete(true);
+      fadeOutMusic(2000);
       setTimeout(() => {
         setShowThankYou(true);
-      }, 2000);
+      }, 2500);
     }
-  }, [currentFrame, storyFrames.length]);
+  }, [currentFrame, storyFrames.length, fadeOutMusic]);
 
-  // Auto-advance frames
+  // Handle narration and frame advancement
   useEffect(() => {
-    if (isComplete) return;
+    if (isComplete || isTransitioning) return;
 
     const subtitleTimer = setTimeout(() => {
       setShowSubtitle(true);
     }, 500);
 
-    const advanceTimer = setTimeout(() => {
-      goToNextFrame();
-    }, frame.duration);
+    // Start narration after subtitle appears
+    const narrationTimer = setTimeout(() => {
+      if (narrationEnabled) {
+        setIsNarrating(true);
+        speak({
+          text: frame.text,
+          rate: 0.75, // Slower for emotional ending
+          pitch: 1.0,
+          onEnd: () => {
+            setIsNarrating(false);
+            // Wait a moment after narration ends, then advance
+            setTimeout(() => {
+              goToNextFrame();
+            }, 1000);
+          },
+        });
+      } else {
+        // If narration disabled, use fixed timing
+        setTimeout(() => {
+          goToNextFrame();
+        }, 6000);
+      }
+    }, 700);
 
     return () => {
       clearTimeout(subtitleTimer);
-      clearTimeout(advanceTimer);
+      clearTimeout(narrationTimer);
     };
-  }, [currentFrame, frame.duration, goToNextFrame, isComplete]);
+  }, [currentFrame, frame.text, goToNextFrame, isComplete, isTransitioning, narrationEnabled, speak]);
 
   const handleReturnHome = () => {
+    stopNarration();
     navigate('/');
+  };
+
+  const toggleNarration = () => {
+    if (isNarrating) {
+      stopNarration();
+      setIsNarrating(false);
+    }
+    setNarrationEnabled(!narrationEnabled);
   };
 
   const getAnimationClass = (animation: StoryFrame['animation']) => {
@@ -131,6 +174,19 @@ const FinalStoryScreen: React.FC = () => {
         {/* Warm overlay for emotional tone */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-amber-900/10 to-black/30" />
       </div>
+
+      {/* Narration toggle (only show during story, not thank you screen) */}
+      {!showThankYou && (
+        <Button
+          variant="ghost"
+          size="icon"
+          className="absolute top-4 right-4 z-50 text-white/80 hover:text-white hover:bg-white/10"
+          onClick={toggleNarration}
+          title={narrationEnabled ? 'Disable narration' : 'Enable narration'}
+        >
+          {narrationEnabled ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5" />}
+        </Button>
+      )}
 
       {/* Progress indicator */}
       {!showThankYou && (
