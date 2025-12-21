@@ -1,6 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { useAudio } from '@/contexts/AudioContext';
+import { useNarration } from '@/hooks/useNarration';
+import { Volume2, VolumeX } from 'lucide-react';
 
 // Import story images
 import introHappy from '@/assets/story/intro-1-happy.jpg';
@@ -12,7 +15,6 @@ interface StoryFrame {
   id: number;
   image: string;
   text: string;
-  duration: number; // in milliseconds
   animation: 'zoom' | 'pan-left' | 'pan-right';
 }
 
@@ -20,46 +22,57 @@ const storyFrames: StoryFrame[] = [
   {
     id: 1,
     image: introHappy,
-    text: "In the magical Dragon Island, little BaoBao lived happily with Mommy Dragon...",
-    duration: 6000,
+    text: "In the magical Dragon Island, little BaoBao lived happily with Mommy Dragon.",
     animation: 'zoom',
   },
   {
     id: 2,
     image: introStorm,
-    text: "One stormy night, a great wind swept through the island, separating BaoBao from Mommy...",
-    duration: 6000,
+    text: "One stormy night, a great wind swept through the island, separating BaoBao from Mommy.",
     animation: 'pan-left',
   },
   {
     id: 3,
     image: introJourney,
     text: "Now BaoBao must journey through enchanted lands, solving coding puzzles to find the way home!",
-    duration: 6000,
     animation: 'pan-right',
   },
   {
     id: 4,
     image: introQuest,
     text: "Will you help BaoBao reunite with Mommy Dragon? The adventure begins now!",
-    duration: 6000,
     animation: 'zoom',
   },
 ];
 
 const StoryScreen: React.FC = () => {
   const navigate = useNavigate();
+  const { fadeInMusic, fadeOutMusic } = useAudio();
+  const { speak, stop: stopNarration } = useNarration();
+  
   const [currentFrame, setCurrentFrame] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [showSubtitle, setShowSubtitle] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
-
+  const [isNarrating, setIsNarrating] = useState(false);
+  const [narrationEnabled, setNarrationEnabled] = useState(true);
+  
+  const hasStartedRef = useRef(false);
   const frame = storyFrames[currentFrame];
+
+  // Start story music on mount
+  useEffect(() => {
+    fadeInMusic('story', 2000);
+    return () => {
+      stopNarration();
+    };
+  }, [fadeInMusic, stopNarration]);
 
   const goToNextFrame = useCallback(() => {
     if (currentFrame < storyFrames.length - 1) {
       setIsTransitioning(true);
       setShowSubtitle(false);
+      setIsNarrating(false);
       
       setTimeout(() => {
         setCurrentFrame(prev => prev + 1);
@@ -67,34 +80,64 @@ const StoryScreen: React.FC = () => {
       }, 1500);
     } else {
       setIsComplete(true);
+      fadeOutMusic(1500);
       setTimeout(() => {
         navigate('/quest-map');
-      }, 2000);
+      }, 2500);
     }
-  }, [currentFrame, navigate]);
+  }, [currentFrame, navigate, fadeOutMusic]);
 
-  // Auto-advance frames
+  // Handle narration and frame advancement
   useEffect(() => {
-    if (isComplete) return;
+    if (isComplete || isTransitioning) return;
 
-    // Show subtitle after a brief delay
+    // Show subtitle
     const subtitleTimer = setTimeout(() => {
       setShowSubtitle(true);
     }, 500);
 
-    // Auto-advance to next frame
-    const advanceTimer = setTimeout(() => {
-      goToNextFrame();
-    }, frame.duration);
+    // Start narration after subtitle appears
+    const narrationTimer = setTimeout(() => {
+      if (narrationEnabled) {
+        setIsNarrating(true);
+        speak({
+          text: frame.text,
+          rate: 0.8,
+          pitch: 1.05,
+          onEnd: () => {
+            setIsNarrating(false);
+            // Wait a moment after narration ends, then advance
+            setTimeout(() => {
+              goToNextFrame();
+            }, 800);
+          },
+        });
+      } else {
+        // If narration disabled, use fixed timing
+        setTimeout(() => {
+          goToNextFrame();
+        }, 5000);
+      }
+    }, 700);
 
     return () => {
       clearTimeout(subtitleTimer);
-      clearTimeout(advanceTimer);
+      clearTimeout(narrationTimer);
     };
-  }, [currentFrame, frame.duration, goToNextFrame, isComplete]);
+  }, [currentFrame, frame.text, goToNextFrame, isComplete, isTransitioning, narrationEnabled, speak]);
 
   const handleSkip = () => {
+    stopNarration();
+    fadeOutMusic(500);
     navigate('/quest-map');
+  };
+
+  const toggleNarration = () => {
+    if (isNarrating) {
+      stopNarration();
+      setIsNarrating(false);
+    }
+    setNarrationEnabled(!narrationEnabled);
   };
 
   const getAnimationClass = (animation: StoryFrame['animation']) => {
@@ -128,14 +171,25 @@ const StoryScreen: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/40" />
       </div>
 
-      {/* Skip button */}
-      <Button
-        variant="ghost"
-        className="absolute top-4 right-4 z-50 text-white/80 hover:text-white hover:bg-white/10"
-        onClick={handleSkip}
-      >
-        Skip Story →
-      </Button>
+      {/* Top controls */}
+      <div className="absolute top-4 right-4 z-50 flex gap-2">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="text-white/80 hover:text-white hover:bg-white/10"
+          onClick={toggleNarration}
+          title={narrationEnabled ? 'Disable narration' : 'Enable narration'}
+        >
+          {narrationEnabled ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5" />}
+        </Button>
+        <Button
+          variant="ghost"
+          className="text-white/80 hover:text-white hover:bg-white/10"
+          onClick={handleSkip}
+        >
+          Skip Story →
+        </Button>
+      </div>
 
       {/* Progress indicator */}
       <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 flex gap-2">
