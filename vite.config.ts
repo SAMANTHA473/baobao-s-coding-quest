@@ -5,6 +5,7 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+  base: "/BaoBao-game/", // ⚠️ MUST match repo name exactly
   server: {
     host: "::",
     port: 8080,
